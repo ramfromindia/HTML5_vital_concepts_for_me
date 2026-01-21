@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+  /* Basic styling */
+  progress {
+    width: 100%;
+    height: 25px;
+    /* Modern way to style the fill color */
+    accent-color: #2ecc71; 
+  }
+  .container {
+    font-family: sans-serif;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 300px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h3>Upload Status</h3>
+  <progress id="uploadBar" value="0" max="100"></progress>
+  
+  <p id="statusText">Ready to start...</p>
+  
+  <button onclick="startSimulation()">Start Upload</button>
+  <button onclick="resetProgress()">Reset</button>
+</div>
+</body>
+
+<script>
+  let progress = 0;
+  let interval;
+
+  function startSimulation() {
+    const bar = document.getElementById('uploadBar');
+    const text = document.getElementById('statusText');
+    
+    // Prevent multiple intervals from running at once
+    clearInterval(interval);
+    
+    interval = setInterval(() => {
+      if (progress >= 100) {
+        clearInterval(interval);
+        text.innerText = "Upload Complete!";
+      } else {
+        progress += 1;
+        bar.value = progress;
+        text.innerText = `Uploading: ${progress}%`;
+      }
+    }, 50); // Updates every 50ms
+  }
+
+  function resetProgress() {
+    clearInterval(interval);
+    progress = 0;
+    document.getElementById('uploadBar').value = 0;
+    document.getElementById('statusText').innerText = "Ready to start...";
+  }
+</script>
+</html>
