@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Themed VS Code Components</title>
+    <style>
+        /* 1. THEME DEFINITIONS */
+        :root {
+            /* Default Dark Theme */
+            --bg-body: #1e1e1e;
+            --bg-card: #252526;
+            --bg-input: #3c3c3c;
+            --text-main: #cccccc;
+            --border: #333333;
+            --accent: #007acc;
+            --success: #4ec9b0;
+            --warning: #dcdcaa;
+            --error: #f44747;
+            --shadow: rgba(0,0,0,0.5);
+        }
+
+        body.light-theme {
+            /* Light Theme Overrides */
+            --bg-body: #f3f3f3;
+            --bg-card: #ffffff;
+            --bg-input: #ffffff;
+            --text-main: #333333;
+            --border: #cccccc;
+            --accent: #005fb8;
+            --success: #0e700e;
+            --warning: #855f00;
+            --error: #be1100;
+            --shadow: rgba(0,0,0,0.1);
+        }
+
+        /* 2. RESPONSIVE LAYOUT */
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap; /* Allows wrapping on mobile */
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        /* 3. COMPONENT STYLING */
+        .password-component {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px var(--shadow);
+            position: relative;
+            /* Fluid width: Min 300px, but expands up to 400px */
+            flex: 1 1 320px;
+            max-width: 400px;
+        }
+
+        /* Theme Toggle Button Styling */
+        .theme-switch {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .input-group { position: relative; margin-top: 8px; }
+        
+        input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px 70px 12px 10px;
+            box-sizing: border-box;
+            outline: none;
+            font-family: 'Consolas', monospace;
+            border-radius: 4px;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .button-tray { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); display: flex; }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            opacity: 0.7;
+        }
+
+        /* SVG Color inherited from text variable */
+        .icon-btn svg { fill: var(--text-main); }
+        .icon-btn:hover { opacity: 1; background: var(--border); border-radius: 4px; }
+
+        meter {
+            width: 100%;
+            height: 10px;
+            display: block;
+            margin: 20px 0 8px 0;
+            appearance: none;
+            background: var(--border);
+            border-radius: 5px;
+        }
+
+        meter::-webkit-meter-optimum-value,
+        meter::-webkit-meter-suboptimum-value,
+        meter::-webkit-meter-even-less-good-value {
+            transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 5px;
+        }
+
+        meter::-webkit-meter-optimum-value { background: var(--success); }
+        meter::-webkit-meter-suboptimum-value { background: var(--warning); }
+        meter::-webkit-meter-even-less-good-value { background: var(--error); }
+
+        .footer { font-size: 0.8rem; display: flex; justify-content: space-between; opacity: 0.8; }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .password-component { flex: 1 1 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-switch" id="themeToggle">Toggle Light/Dark Theme</button>
+
+    <div class="dashboard">
+        <div id="main-pass"></div>
+        <div id="admin-pass"></div>
+    </div>
+
+<script>
+    class PasswordComponent {
+        constructor(containerId, labelText) {
+            this.container = document.getElementById(containerId);
+            this.label = labelText;
+            this.render();
+            this.init();
+        }
+
+        render() {
+            this.container.classList.add('password-component');
+            this.container.innerHTML = `
+                <div class="header-row" style="display:flex; justify-content:space-between; align-items:center">
+                    <label style="font-size: 11px; font-weight: bold;">${this.label}</label>
+                    <button class="gen-link" style="color:var(--accent); font-size:11px; cursor:pointer; background:none; border:none;">Generate</button>
+                </div>
+                <div class="input-group">
+                    <input type="password" spellcheck="false" placeholder="Enter password...">
+                    <div class="button-tray">
+                        <button class="icon-btn btn-copy">
+                            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 4h7V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h1V4z"/><path d="M6 6h7v7H6V6zm1 1v5h5V7H7z"/></svg>
+                        </button>
+                        <button class="icon-btn btn-toggle">
+                            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 11.5a3.5 3.5 0 1 1 3.5-3.5A3.5 3.5 0 0 1 8 11.5zm0-6a2.5 2.5 0 1 0 2.5 2.5A2.5 2.5 0 0 0 8 5.5z"/><path d="M15.87 7.73a8.3 8.3 0 0 0-15.74 0l-.13.27.13.27a8.3 8.3 0 0 0 15.74 0l.13-.27zM8 12.8A6.7 6.7 0 0 1 1.62 8 6.7 6.7 0 0 1 8 3.2 6.7 6.7 0 0 1 14.38 8 6.7 6.7 0 0 1 8 12.8z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <meter min="0" max="4" low="2" high="3" optimum="4" value="0"></meter>
+                <div class="footer">
+                    <span class="status">Security: None</span>
+                    <span class="chars">0 chars</span>
+                </div>
+            `;
+        }
+
+        init() {
+            const input = this.container.querySelector('input');
+            const meter = this.container.querySelector('meter');
+            const statusText = this.container.querySelector('.status');
+            const genBtn = this.container.querySelector('.gen-link');
+            const toggleBtn = this.container.querySelector('.btn-toggle');
+
+            const update = () => {
+                const val = input.value;
+                let score = (val.length >= 8) + (/[A-Z]/.test(val)) + (/[0-9]/.test(val)) + (/[^A-Za-z0-9]/.test(val));
+                meter.value = score;
+                this.container.querySelector('.chars').innerText = `${val.length} chars`;
+                const states = ["None", "Weak", "Medium", "Good", "Strong"];
+                statusText.innerText = `Security: ${states[score]}`;
+            };
+
+            input.addEventListener('input', update);
+            genBtn.addEventListener('click', () => {
+                input.value = Math.random().toString(36).slice(-8) + "A1!";
+                update();
+            });
+            toggleBtn.addEventListener('click', () => {
+                input.type = input.type === 'password' ? 'text' : 'password';
+            });
+        }
+    }
+
+    // Initialize Components
+    new PasswordComponent('main-pass', 'USER ACCESS');
+    new PasswordComponent('admin-pass', 'DATABASE ROOT');
+
+    // Theme Toggle Logic
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+    });
+</script>
+</body>
+</html>
