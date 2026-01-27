@@ -1,54 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Output Tag Explained</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro-Calc Elite | HTML5 Output</title>
     <style>
-    /* CSS styling for visual presentation */
-        body { font-family: sans-serif; padding: 20px; }
-        form { border: 1px solid #ccc; padding: 20px; border-radius: 8px; max-width: 300px; }
-        /* Styling the output to look different from inputs */
-        output { 
-            font-weight: bold; 
-            color: blue; 
-            background: #f0f0f0; 
-            padding: 2px 5px; 
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --accent: #2563eb;
+            --output-bg: #eff6ff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --accent: #38bdf8;
+            --output-bg: #1e293b;
+            --border: #334155;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        body { 
+            background-color: var(--bg); 
+            color: var(--text-main); 
+            font-family: 'Inter', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: 0.3s;
+        }
+
+        .container { width: 100%; max-width: 650px; padding: 20px; }
+
+        form { 
+            background: var(--card); 
+            padding: 2.5rem; 
+            border-radius: 24px; 
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 12px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-main);
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.2s;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .result-item {
+            background: var(--output-bg);
+            padding: 1.2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .result-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; display: block; margin-bottom: 4px;}
+
+        output { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
+
+        .full-width { grid-column: span 2; }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        button{width:25%; background:none; border:none; color:var(--text-sub); cursor:pointer; text-decoration:underline; font-size:0.85rem;}
     </style>
 </head>
 <body>
 
-    <!-- ===== IMPORTANT USES OF HTML5 <output> TAG =====
-         1. Display calculation results from form inputs (arithmetic, data aggregation)
-         2. Show search/filter results dynamically as user modifies inputs
-         3. Display sensor or API data updates without page reload
-         4. Real-time validation feedback tied to specific inputs
-         5. Accessibility: Semantically meaningful to screen readers (unlike generic divs)
-         6. Self-documenting: "for" attribute clearly shows which inputs feed this output
-         7. Browser recognition: Some browsers may announce changes to screen readers automatically
-    ===== -->
+<div class="container">
+    <form oninput="
+        let a = parseFloat(numA.value) || 0;
+        let b = parseFloat(numB.value) || 0;
+        let c = parseFloat(numC.value) || 0;
 
-    <!-- Form with oninput event: automatically recalculates when inputs change, eliminating need for buttons or event listeners -->
-    <form oninput="total.value = parseInt(num1.value) + parseInt(num2.value)">
+        /* Standard Aggregates */
+        resSum.value = (a + b + c).toLocaleString();
+        resAvg.value = ((a + b + c) / 3).toFixed(2);
+
+        /* 1. Square Root (of Value A) */
+        resSqrt.value = a >= 0 ? Math.sqrt(a).toFixed(4) : 'Error (Neg)';
+
+        /* 2. Cube Root (of Value B) */
+        resCbrt.value = Math.cbrt(b).toFixed(4);
+
+        /* 3. Exponentiation (A raised to the power of B) */
+        let exp = a ** b;
+        resExp.value = exp > 1000000 ? exp.toExponential(2) : exp.toFixed(2);
+
+        /* Global Product */
+        resProd.value = (a * b * c).toLocaleString();
+    ">
+        <div class="header-row">
+            <h2 style="margin:0">ProCalc Elite</h2>
+            <button type="button" class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+        </div>
         
-        <!-- First numeric input with unique id for reference in the output element -->
-        <label for="num1">Number A:</label><br>
-        <input type="number" name="num1" id="num1" value="0"><br><br>
+        <div class="input-section">
+            <div class="input-group">
+                <label for="numA">Value A</label>
+                <input type="number" id="numA" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label for="numB">Value B</label>
+                <input type="number" id="numB" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label for="numC">Value C</label>
+                <input type="number" id="numC" placeholder="0">
+            </div>
+        </div>
 
-        <!-- Second numeric input: together these feed into the output calculation -->
-        <label for="num2">Number B:</label><br>
-        <input type="number" name="num2" id="num2" value="0"><br><hr>
-        <p>The Sum is: 
-            <!-- HTML5 <output> tag: semantically declares this element displays calculation results.
-                 Advantages over plain <div> or <span> with JS:
-                 1. Accessibility: Screen readers recognize it as output, not just text
-                 2. name + for attributes: Explicitly links inputs to outputs (self-documenting)
-                 3. Auto-updates: Updates via form.oninput without manual DOM manipulation
-                 4. Semantic HTML: Conveys intent clearly to browsers and developers -->
-            <output name="total" for="num1 num2">0</output>
-        </p>
+        <div class="results-grid">
+            <div class="result-item">
+                <span class="result-label">Total Sum (A+B+C)</span>
+                <output name="resSum" for="numA numB numC">0</output>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Mean Average</span>
+                <output name="resAvg" for="numA numB numC">0.00</output>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Square Root (√A)</span>
+                <output name="resSqrt" for="numA">0.0000</output>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Cube Root (∛B)</span>
+                <output name="resCbrt" for="numB">0.0000</output>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Exponent (A^B)</span>
+                <output name="resExp" for="numA numB">0.00</output>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Product (A×B×C)</span>
+                <output name="resProd" for="numA numB numC">0</output>
+            </div>
+        </div>
 
-        <button type="reset">Reset Form</button>
+        <button type="reset">
+            Clear All Data
+        </button>
     </form>
+</div>
+
+
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        const current = body.getAttribute('data-theme');
+        body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+</script>
 
 </body>
 </html>
