@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro-Calc Elite | HTML5 Output</title>
+    <title>Pro-Calc Elite | Robust Validation</title>
     <style>
         :root {
             --bg: #f8fafc;
@@ -11,6 +11,7 @@
             --text-main: #0f172a;
             --text-sub: #64748b;
             --accent: #2563eb;
+            --danger: #ef4444; /* Red for errors */
             --output-bg: #eff6ff;
             --border: #e2e8f0;
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
@@ -49,14 +50,30 @@
             border: 1px solid var(--border);
         }
 
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-
-        .input-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        /* VALIDATION STYLING */
+        /* This pseudo-class triggers when the 'min' attribute is violated 
+           or the 'required' field is messed up */
+        input:invalid {
+            border-color: var(--danger) !important;
+            background-color: rgba(239, 68, 68, 0.05);
+            outline: none;
         }
+
+        /* Helper text for errors */
+        .error-msg {
+            font-size: 0.65rem;
+            color: var(--danger);
+            display: none; /* Hidden by default */
+            margin-top: 4px;
+        }
+
+        /* Show error message when input is invalid */
+        input:invalid + .error-msg {
+            display: block;
+        }
+
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .input-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
 
         .input-group label {
             display: block;
@@ -76,7 +93,7 @@
             color: var(--text-main);
             outline: none;
             box-sizing: border-box;
-            transition: 0.2s;
+            transition: border-color 0.2s;
         }
 
         input:focus { border-color: var(--accent); }
@@ -89,54 +106,32 @@
             border-top: 1px solid var(--border);
         }
 
-        .result-item {
-            background: var(--output-bg);
-            padding: 1.2rem;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-        }
-
+        .result-item { background: var(--output-bg); padding: 1.2rem; border-radius: 16px; border: 1px solid var(--border); }
         .result-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; display: block; margin-bottom: 4px;}
-
         output { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
 
-        .full-width { grid-column: span 2; }
-
-        .theme-toggle {
-            cursor: pointer;
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-        button{width:25%; background:none; border:none; color:var(--text-sub); cursor:pointer; text-decoration:underline; font-size:0.85rem;}
+        .theme-toggle { cursor: pointer; background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 50px; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <form oninput="
+    <form id="calcForm" oninput="
+        /* Validation check: if form is invalid, don't perform calculations */
+        if (!this.checkValidity()) {
+            resSum.value = 'Error';
+            return;
+        }
+
         let a = parseFloat(numA.value) || 0;
         let b = parseFloat(numB.value) || 0;
         let c = parseFloat(numC.value) || 0;
 
-        /* Standard Aggregates */
         resSum.value = (a + b + c).toLocaleString();
         resAvg.value = ((a + b + c) / 3).toFixed(2);
-
-        /* 1. Square Root (of Value A) */
-        resSqrt.value = a >= 0 ? Math.sqrt(a).toFixed(4) : 'Error (Neg)';
-
-        /* 2. Cube Root (of Value B) */
+        resSqrt.value = Math.sqrt(a).toFixed(4);
         resCbrt.value = Math.cbrt(b).toFixed(4);
-
-        /* 3. Exponentiation (A raised to the power of B) */
-        let exp = a ** b;
-        resExp.value = exp > 1000000 ? exp.toExponential(2) : exp.toFixed(2);
-
-        /* Global Product */
+        resExp.value = (a ** b).toExponential(2);
         resProd.value = (a * b * c).toLocaleString();
     ">
         <div class="header-row">
@@ -146,16 +141,19 @@
         
         <div class="input-section">
             <div class="input-group">
-                <label for="numA">Value A</label>
-                <input type="number" id="numA" placeholder="0">
+                <label>Value A (Positive)</label>
+                <input type="number" id="numA" min="0" step="any" required placeholder="0">
+                <span class="error-msg">Positive number required</span>
             </div>
             <div class="input-group">
-                <label for="numB">Value B</label>
-                <input type="number" id="numB" placeholder="0">
+                <label>Value B (Positive)</label>
+                <input type="number" id="numB" min="0" step="any" required placeholder="0">
+                <span class="error-msg">Positive number required</span>
             </div>
             <div class="input-group">
-                <label for="numC">Value C</label>
-                <input type="number" id="numC" placeholder="0">
+                <label>Value C (Positive)</label>
+                <input type="number" id="numC" min="0" step="any" required placeholder="0">
+                <span class="error-msg">Positive number required</span>
             </div>
         </div>
 
@@ -186,7 +184,7 @@
             </div>
         </div>
 
-        <button type="reset">
+        <button type="reset" style="width:100%; margin-top:2rem; background:none; border:none; color:var(--text-sub); cursor:pointer; text-decoration:underline; font-size:0.85rem;">
             Clear All Data
         </button>
     </form>
@@ -200,6 +198,14 @@
         const current = body.getAttribute('data-theme');
         body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
     }
+
+    // Agent Tip: This prevents the 'e', '+', and '-' characters from even being typed 
+    // for an extra layer of "robustness" against non-numeric entries.
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.onkeydown = (e) => {
+            if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault();
+        };
+    });
 </script>
 
 </body>
