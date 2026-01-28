@@ -104,28 +104,93 @@
 
         #theme-toggle { cursor: pointer; background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 50px; font-weight: 600; }
 
+       /* Container for the buttons to keep them side-by-side */
+.header-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Updated Reset Button (myBtn) */
+#myBtn { 
+    background: transparent; 
+    border: 1px solid var(--border); 
+    color: var(--text-sub); 
+    padding: 8px 16px; 
+    border-radius: 50px; 
+    cursor: pointer; 
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    text-decoration: none; /* Removed the underline */
+    margin: 0; /* Reset previous margin */
+    width: auto; /* Overrides the previous 100% width */
+}
+
+#myBtn:hover {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: white;
+}
+
+/* Keep the Theme Toggle looking consistent */
+#theme-toggle { 
+    cursor: pointer; 
+    background: var(--accent); 
+    color: white; 
+    border: none; 
+    padding: 8px 16px; 
+    border-radius: 50px; 
+    font-weight: 600;
+    font-size: 0.75rem;
+    transition: opacity 0.2s;
+}
+
+#theme-toggle:hover {
+    opacity: 0.9;
+}
+
+#myBtn:active {
+    transform: scale(0.98);
+}
+
+/* Optional: Add a small reset icon via pseudo-element */
+#myBtn::before {
+    content: '↺';
+    font-size: 1.1rem;
+}
+
     </style>
 </head>
 <body>
-
+<!--Calculator Form Container starts-->
 <div class="container">
     <form id="calcForm" oninput="calculateResults()">
         <div class="header-row">
             <h2 style="margin:0">ProCalc Elite</h2>
             <button type="button" id="theme-toggle">Toggle Theme</button>
+            
+        <!--Reset Button-->
+        <button id="myBtn" type="reset">Clear All Data</button>
         </div>
-        
+
+        <!--Input Section one-->
         <div class="input-section">
             <div class="input-group">
                 <label for="num1">Value A</label>
                 <input type="number" id="num1" min="0" step="any" required placeholder="0">
                 <span class="error-msg">Positive number required</span>
             </div>
+
+            <!--Input Section two-->
             <div class="input-group">
                 <label for="num2">Value B</label>
                 <input type="number" id="num2" min="0" step="any" required placeholder="0">
                 <span class="error-msg">Positive number required</span>
             </div>
+
+            <!--Input Section three-->
             <div class="input-group">
                 <label for="num3">Value C</label>
                 <input type="number" id="num3" min="0" step="any" required placeholder="0">
@@ -133,6 +198,7 @@
             </div>
         </div>
 
+        <!--Results Section-->
         <div class="results-grid">
             <div class="result-item">
                 <span class="result-label">Total Sum (A+B+C)</span>
@@ -160,7 +226,6 @@
             </div>
         </div>
 
-        <button id="myBtn" type="reset"> Clear All Data</button>
     </form>
 </div>
 
