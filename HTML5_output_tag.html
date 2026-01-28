@@ -11,7 +11,7 @@
             --text-main: #0f172a;
             --text-sub: #64748b;
             --accent: #2563eb;
-            --danger: #ef4444; /* Red for errors */
+            --danger: #ef4444; 
             --output-bg: #eff6ff;
             --border: #e2e8f0;
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
@@ -37,7 +37,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            transition: 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container { width: 100%; max-width: 650px; padding: 20px; }
@@ -50,27 +50,19 @@
             border: 1px solid var(--border);
         }
 
-        /* VALIDATION STYLING */
-        /* This pseudo-class triggers when the 'min' attribute is violated 
-           or the 'required' field is messed up */
         input:invalid {
             border-color: var(--danger) !important;
             background-color: rgba(239, 68, 68, 0.05);
-            outline: none;
         }
 
-        /* Helper text for errors */
         .error-msg {
             font-size: 0.65rem;
             color: var(--danger);
-            display: none; /* Hidden by default */
+            display: none;
             margin-top: 4px;
         }
 
-        /* Show error message when input is invalid */
-        input:invalid + .error-msg {
-            display: block;
-        }
+        input:invalid + .error-msg { display: block; }
 
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
         .input-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
@@ -116,24 +108,7 @@
 <body>
 
 <div class="container">
-    <form id="calcForm" oninput="
-        /* Validation check: if form is invalid, don't perform calculations */
-        if (!this.checkValidity()) {
-            resSum.value = 'Error';
-            return;
-        }
-
-        let a = parseFloat(numA.value) || 0;
-        let b = parseFloat(numB.value) || 0;
-        let c = parseFloat(numC.value) || 0;
-
-        resSum.value = (a + b + c).toLocaleString();
-        resAvg.value = ((a + b + c) / 3).toFixed(2);
-        resSqrt.value = Math.sqrt(a).toFixed(4);
-        resCbrt.value = Math.cbrt(b).toFixed(4);
-        resExp.value = (a ** b).toExponential(2);
-        resProd.value = (a * b * c).toLocaleString();
-    ">
+    <form id="calcForm" oninput="calculateResults()">
         <div class="header-row">
             <h2 style="margin:0">ProCalc Elite</h2>
             <button type="button" class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
@@ -141,18 +116,18 @@
         
         <div class="input-section">
             <div class="input-group">
-                <label for="numA">Value A (Positive)</label>
-                <input type="number" id="numA" name="numA" min="0" step="any" required placeholder="0">
+                <label for="num1">Value A</label>
+                <input type="number" id="num1" min="0" step="any" required placeholder="0">
                 <span class="error-msg">Positive number required</span>
             </div>
             <div class="input-group">
-                <label for="numB">Value B (Positive)</label>
-                <input type="number" id="numB" name="numB" min="0" step="any" required placeholder="0">
+                <label for="num2">Value B</label>
+                <input type="number" id="num2" min="0" step="any" required placeholder="0">
                 <span class="error-msg">Positive number required</span>
             </div>
             <div class="input-group">
-                <label for="numC">Value C (Positive)</label>
-                <input type="number" id="numC" name="numC" min="0" step="any" required placeholder="0">
+                <label for="num3">Value C</label>
+                <input type="number" id="num3" min="0" step="any" required placeholder="0">
                 <span class="error-msg">Positive number required</span>
             </div>
         </div>
@@ -160,27 +135,27 @@
         <div class="results-grid">
             <div class="result-item">
                 <span class="result-label">Total Sum (A+B+C)</span>
-                <output name="resSum" for="numA numB numC">0</output>
+                <output id="resSum">0</output>
             </div>
             <div class="result-item">
                 <span class="result-label">Mean Average</span>
-                <output name="resAvg" for="numA numB numC">0.00</output>
+                <output id="resAvg">0.00</output>
             </div>
             <div class="result-item">
                 <span class="result-label">Square Root (√A)</span>
-                <output name="resSqrt" for="numA">0.0000</output>
+                <output id="resSqrt">0.0000</output>
             </div>
             <div class="result-item">
                 <span class="result-label">Cube Root (∛B)</span>
-                <output name="resCbrt" for="numB">0.0000</output>
+                <output id="resCbrt">0.0000</output>
             </div>
             <div class="result-item">
                 <span class="result-label">Exponent (A^B)</span>
-                <output name="resExp" for="numA numB">0.00</output>
+                <output id="resExp">0.00</output>
             </div>
             <div class="result-item">
                 <span class="result-label">Product (A×B×C)</span>
-                <output name="resProd" for="numA numB numC">0</output>
+                <output id="resProd">0</output>
             </div>
         </div>
 
@@ -190,15 +165,51 @@
     </form>
 </div>
 
-
-
 <script>
-    function toggleTheme() {
-        const body = document.body;
-        const current = body.getAttribute('data-theme');
-        body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    // 1. Cache the Form and Input references
+    const form = document.getElementById('calcForm');
+    const inputs = {
+        a: document.getElementById('num1'),
+        b: document.getElementById('num2'),
+        c: document.getElementById('num3')
+    };
+
+    // 2. Cache the Output references
+    const outputs = {
+        sum:  document.getElementById('resSum'),
+        avg:  document.getElementById('resAvg'),
+        sqrt: document.getElementById('resSqrt'),
+        cbrt: document.getElementById('resCbrt'),
+        exp:  document.getElementById('resExp'),
+        prod: document.getElementById('resProd')
+    };
+
+    function calculateResults() {
+        // Stop if inputs are invalid (e.g., negative numbers)
+        if (!form.checkValidity()) {
+            outputs.sum.value = "⚠️";
+            return;
+        }
+
+        // Get values once
+        const valA = parseFloat(inputs.a.value) || 0;
+        const valB = parseFloat(inputs.b.value) || 0;
+        const valC = parseFloat(inputs.c.value) || 0;
+
+        // Update DOM using the cached references
+        outputs.sum.value  = (valA + valB + valC).toLocaleString();
+        outputs.avg.value  = ((valA + valB + valC) / 3).toFixed(2);
+        outputs.sqrt.value = Math.sqrt(valA).toFixed(4);
+        outputs.cbrt.value = Math.cbrt(valB).toFixed(4);
+        outputs.exp.value  = (valA ** valB).toExponential(2);
+        outputs.prod.value = (valA * valB * valC).toLocaleString();
     }
 
+    function toggleTheme() {
+        const body = document.body;
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    }
 </script>
 
 </body>
