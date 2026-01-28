@@ -111,7 +111,7 @@
     <form id="calcForm" oninput="calculateResults()">
         <div class="header-row">
             <h2 style="margin:0">ProCalc Elite</h2>
-            <button type="button" class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+            <button type="button" id="theme-toggle">Toggle Theme</button>
         </div>
         
         <div class="input-section">
@@ -204,6 +204,9 @@
         outputs.exp.value  = (valA ** valB).toExponential(2);
         outputs.prod.value = (valA * valB * valC).toLocaleString();
     }
+
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    themeToggleBtn.addEventListener('click', toggleTheme);
 
     function toggleTheme() {
         const body = document.body;
