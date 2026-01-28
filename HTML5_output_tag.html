@@ -199,13 +199,6 @@
         body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
     }
 
-    // Agent Tip: This prevents the 'e', '+', and '-' characters from even being typed 
-    // for an extra layer of "robustness" against non-numeric entries.
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.onkeydown = (e) => {
-            if (['e', 'E', '+', '-'].includes(e.key)) e.preventDefault();
-        };
-    });
 </script>
 
 </body>
