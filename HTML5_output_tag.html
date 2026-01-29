@@ -249,12 +249,6 @@
     };
 
     function calculateResults() {
-        // Stop if inputs are invalid (e.g., negative numbers)
-        if (!form.checkValidity()) {
-            outputs.sum.value = "⚠️";
-            return;
-        }
-
         // Get values once
         const valA = parseFloat(inputs.a.value) || 0;
         const valB = parseFloat(inputs.b.value) || 0;
