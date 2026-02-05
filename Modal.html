@@ -7,12 +7,50 @@
   <link rel="stylesheet" href="Modal.css" />
 </head>
 <body>
+<!--
+====================================================
+STYLING vs BEHAVIOR CONVENTION (IMPORTANT)
+----------------------------------------------------
+
+1. CSS CLASSES
+   - Used ONLY for styling and layout.
+   - Safe to rename or refactor by designers.
+   - Examples:
+       class="btn-primary"
+       class="modal"
+       class="card__title"
+
+2. JAVASCRIPT HOOKS (data-attributes)
+   - Used ONLY for JavaScript behavior.
+   - Must NEVER be used for styling.
+   - JavaScript selects elements via [data-*].
+   - Examples:
+       data-modal-open
+       data-modal-close
+       data-form-submit
+
+WHY THIS MATTERS:
+-----------------
+✔ Prevents JS breaking when CSS classes change
+✔ Keeps styling and logic independent
+✔ Makes HTML self-documenting
+✔ Improves team collaboration
+✔ Scales cleanly for larger projects
+
+RULE OF THUMB:
+--------------
+class      → appearance (CSS)
+data-*     → behavior   (JavaScript)
+
+Always follow this pattern.
+
+====================================================
+-->
 
 <button class="btn-primary" data-modal-open>
   Open Modal
 </button>
 
-<!-- Modal -->
 <div class="modal" data-modal>
   <div class="modal__overlay" data-modal-close></div>
 
