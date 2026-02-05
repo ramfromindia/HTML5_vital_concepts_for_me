@@ -49,8 +49,47 @@ fetch("https://api.adviceslip.com/advice")
   .then(data => advice.textContent = data.slip.advice)
   .catch(() => advice.textContent = "Offline");
 
-// ================================
-// IntersectionObserver
+// IntersectionObserver API
+// =====================================================
+//
+// Purpose:
+// Allows the browser to notify JavaScript when an element
+// enters or leaves the viewport (visible screen area).
+//
+// Why use it:
+// - Efficient scroll-based animations
+// - Lazy loading images or components
+// - Triggering logic only when content becomes visible
+//
+// Compared to old scroll listeners:
+// ✔ No continuous polling
+// ✔ Better performance
+// ✔ Browser-optimized callbacks
+//
+// How it works:
+// 1. Create an observer with a callback function.
+// 2. The browser watches selected elements.
+// 3. When visibility changes, the callback runs.
+// 4. Each "entry" represents one observed element.
+//
+// In this project:
+// - We observe all elements with class ".observe".
+// - When an element becomes visible (isIntersecting === true),
+//   we add the "show" class.
+// - CSS handles the animation.
+//
+// Flow:
+// Browser → detects intersection
+// → triggers callback
+// → JavaScript adds class
+// → CSS animates
+// This pattern demonstrates progressive enhancement:
+// HTML provides structure
+// CSS defines animation
+// JavaScript only triggers behavior
+//
+// =====================================================
+
 // ================================
 
 const observer = new IntersectionObserver(entries => {
