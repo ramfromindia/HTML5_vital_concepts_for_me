@@ -2,6 +2,10 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../CSS3_vital_concepts_for_me"
 		}
-	]
+	],
+	"settings": {}
 }
