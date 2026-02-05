@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HTML5 Best Practices — DOs & DON'Ts</title>
+  <meta name="description" content="Concise HTML5 DOs and DON'Ts, with tips for collaborating with CSS3 and JavaScript.">
+  <style>
+    :root {
+      --max-width: 900px;
+      --color-bg: #f6f8fb;
+      --color-card: #ffffff;
+      --color-accent: #0b63d8;
+      --color-accent-2: #6ba6ff;
+      --color-text: #0f172a;
+      --color-muted: #6b7280;
+      --shadow-1: 0 4px 10px rgba(2,6,23,0.04);
+      --shadow-2: 0 6px 18px rgba(11,99,216,0.06);
+      --gap: 16px;
+      --radius: 10px;
+    }
+
+    /* Reset & globals */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Layout */
+    .wrap {
+      max-width: var(--max-width);
+      margin: 40px auto;
+      padding: 24px;
+    }
+
+    header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding: 24px;
+      border-radius: 12px;
+      background: linear-gradient(90deg,#ffffff 0%,#f8fbff 100%);
+      box-shadow: var(--shadow-2);
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 22px;
+      background: linear-gradient(135deg,var(--color-accent),var(--color-accent-2));
+    }
+
+    h1 { font-size: 20px; margin: 0; }
+    p.lead { margin: 6px 0 0; color: var(--color-muted); }
+
+    main { margin-top: 18px; display: grid; gap: 18px; }
+
+    /* Card */
+    .card {
+      background: var(--color-card);
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Grid inside cards */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    h2 { font-size: 16px; margin: 0 0 8px; }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 8px 0; }
+
+    /* Code & examples */
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      background: #0f172a;
+      color: #e6eef8;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    pre {
+      padding: 12px;
+      background: #f3f6fb;
+      color: var(--color-text);
+      border-radius: 8px;
+      overflow: auto;
+    }
+
+    .muted { color: var(--color-muted); font-size: 13px; }
+
+    footer {
+      margin-top: 14px;
+      text-align: center;
+      color: var(--color-muted);
+      font-size: 13px;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">HTML5</div>
+      <div>
+        <h1>HTML5 Best Practices — DOs & DON'Ts</h1>
+        <p class="lead">Practical guidance for writing high-quality HTML5 and collaborating with CSS3 and JavaScript.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" aria-labelledby="dos">
+        <h2 id="dos">DOs</h2>
+        <p class="muted">Prioritize semantics, accessibility, maintainability, and performance.</p>
+        <div class="grid">
+          <div>
+            <ul>
+              <li><strong>Semantic Structure:</strong> Use <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>.</li>
+              <li><strong>Separation of Concerns:</strong> Keep HTML for structure, CSS for presentation, JS for behaviour.</li>
+              <li><strong>Accessibility First:</strong> Add <code>alt</code>, <code>&lt;label&gt;</code>, proper roles, and keyboard focus support.</li>
+              <li><strong>Mobile-First / Responsive:</strong> Include <code>meta viewport</code>, use relative units, Flexbox/Grid.</li>
+              <li><strong>Progressive Enhancement:</strong> Ensure core content works without JS; enhance when available.</li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li><strong>Performance Mindset:</strong> Minimize DOM depth, lazy-load images, compress assets.</li>
+              <li><strong>Consistent Naming:</strong> Use clear class names or conventions (BEM, utility scales).</li>
+              <li><strong>Lint & Validate:</strong> Use validators and linters (W3C, HTMLHint) and include checks in CI.</li>
+              <li><strong>Document Contracts:</strong> Describe <code>data-*</code> attributes and custom events for collaborators.</li>
+              <li><strong>Feature Detection:</strong> Prefer feature-detection over user-agent sniffing.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="donts">
+        <h2 id="donts">DON'Ts</h2>
+        <p class="muted">Avoid legacy patterns, accessibility pitfalls, and brittle markup.</p>
+        <div class="grid">
+          <div>
+            <ul>
+              <li><strong>No Presentation in HTML:</strong> Avoid inline styles and layout in tables.</li>
+              <li><strong>No Inline Handlers:</strong> Don't use <code>onclick</code> or other inline JS handlers.</li>
+              <li><strong>Don't Overuse Divs:</strong> Prefer semantic elements to generic <code>&lt;div&gt;</code>/<code>&lt;span&gt;</code>.</li>
+              <li><strong>Don't Rely on Color Alone:</strong> Ensure information conveyed by color also has text or icons.</li>
+              <li><strong>Don't Block Rendering:</strong> Avoid blocking synchronous resources in the critical path.</li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li><strong>No Deprecated Tags:</strong> Avoid <code>&lt;font&gt;</code>, <code>&lt;center&gt;</code>, and obsolete attributes.</li>
+              <li><strong>No Duplicate IDs:</strong> Keep IDs unique; use classes for repeated selectors.</li>
+              <li><strong>No Missing A11y:</strong> Don't ship interactive controls without keyboard/screen-reader support.</li>
+              <li><strong>No Hardcoded Locale Text:</strong> Design for internationalization from the start.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="css">
+        <h2 id="css">Working With CSS3</h2>
+        <ul>
+          <li><strong>External Stylesheets:</strong> Keep CSS in external files for caching and separation.</li>
+          <li><strong>Scoped Selectors:</strong> Target classes/component roots; avoid global tag selectors that bleed styles.</li>
+          <li><strong>CSS Variables:</strong> Use custom properties for theme tokens and design scales.</li>
+          <li><strong>Respect Preferences:</strong> Honor <code>prefers-reduced-motion</code> and system color schemes.</li>
+        </ul>
+      </section>
+
+      <section class="card" aria-labelledby="js">
+        <h2 id="js">Working With JavaScript</h2>
+        <ul>
+          <li><strong>Unobtrusive Behavior:</strong> Attach listeners via <code>addEventListener</code>, not inline attributes.</li>
+          <li><strong>Modular Code:</strong> Use ES modules or bundlers and avoid leaking globals.</li>
+          <li><strong>Sync State & ARIA:</strong> Update ARIA properties when UI state changes.</li>
+          <li><strong>Graceful Fallbacks:</strong> Provide server-rendered content or non-JS fallbacks for critical flows.</li>
+        </ul>
+      </section>
+
+      <section class="card" aria-labelledby="examples">
+        <h2 id="examples">Quick Examples</h2>
+        <p class="muted">Use these small patterns in your projects.</p>
+        <div class="grid">
+          <div>
+            <h3 style="font-size:14px;margin:8px 0">Correct Button</h3>
+            <pre><code>&lt;button type="button" class="btn-primary"&gt;Save&lt;/button&gt;</code></pre>
+          </div>
+          <div>
+            <h3 style="font-size:14px;margin:8px 0">Deferred Script</h3>
+            <pre><code>&lt;script src="/js/app.js" defer&gt;&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+
+        <h3 style="font-size:14px;margin:12px 0 8px">Accessible Form</h3>
+        <pre><code>&lt;label for="email"&gt;Email&lt;/label&gt;
+&lt;input id="email" name="email" type="email" required aria-describedby="emailHelp"&gt;
+&lt;small id="emailHelp"&gt;We’ll only use this to contact you.&lt;/small&gt;</code></pre>
+      </section>
+
+      <section class="card" aria-labelledby="next">
+        <h2 id="next">Next Steps</h2>
+        <ul>
+          <li>Use this file as a team reference or include it in your repo docs.</li>
+          <li>Convert to a printable checklist (PDF) or a markdown cheatsheet for CI linting.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer>
+      Guidelines saved in <a href="HTML5_vital_concepts_for_me_DOs_DONTs.html">this file</a> — adapt to your project.
+    </footer>
+  </div>
+</body>
+</html>
