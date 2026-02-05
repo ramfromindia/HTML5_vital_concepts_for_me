@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modal Example</title>
+  <link rel="stylesheet" href="Modal.css" />
+</head>
+<body>
+
+<button class="btn-primary" data-modal-open>
+  Open Modal
+</button>
+
+<!-- Modal -->
+<div class="modal" data-modal>
+  <div class="modal__overlay" data-modal-close></div>
+
+  <div class="modal__content">
+    <h2>Welcome 👋</h2>
+    <p>This is a clean modal example.</p>
+
+    <button class="btn-secondary" data-modal-close>
+      Close
+    </button>
+  </div>
+</div>
+
+<script src="Modal.js"></script>
+</body>
+</html>
