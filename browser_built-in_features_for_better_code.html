@@ -1,0 +1,87 @@
+<!--
+====================================================
+Mini Notes App – HTML5 Structure Layer
+
+Theme:
+Demonstrates leveraging browser built-ins for clean,
+high-quality frontend code with separation of concerns.
+
+Uses:
+
+HTML5
+- Semantic layout (header, main, section)
+- Native form validation
+- Accessibility-friendly structure
+
+Browser Built-ins
+- Constraint Validation API
+- localStorage
+- Fetch API
+- IntersectionObserver
+
+Architecture:
+HTML  → Structure
+CSS   → Presentation
+JS    → Behavior
+
+Goal:
+Progressive enhancement with zero frameworks.
+
+====================================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Notes App</title>
+
+  <!-- Presentation Layer -->
+  <link rel="stylesheet" href="browser_built-in_features_for_better_code.css">
+</head>
+
+<body>
+
+<header>
+  <h1>My Notes</h1>
+</header>
+
+<main>
+
+  <!-- Add Note -->
+  <section class="card observe">
+    <h2>Add Note</h2>
+
+    <!-- HTML5 native validation -->
+    <form id="noteForm">
+      <input
+        type="text"
+        id="noteInput"
+        placeholder="Write something…"
+        required
+        minlength="3"
+      >
+      <button>Add</button>
+    </form>
+  </section>
+
+  <!-- Stored Notes -->
+  <section class="card observe">
+    <h2>Saved Notes</h2>
+    <ul id="notes"></ul>
+  </section>
+
+  <!-- Fetch API demo -->
+  <section class="card observe">
+    <h2>Random Advice</h2>
+    <p id="advice">Loading…</p>
+  </section>
+
+</main>
+
+<!-- Behavior Layer -->
+<script src="browser_built-in_features_for_better_code.js"></script>
+
+</body>
+</html>
