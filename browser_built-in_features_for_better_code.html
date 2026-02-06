@@ -13,13 +13,14 @@
 </header>
 
 <main>
+  
   <section class="card observe">
-    <h2>Add New Note</h2>
     <form id="noteForm">
+      <label for="noteInput" class="form-label">Create a New Note</label>
       <input
         type="text"
         id="noteInput"
-        placeholder="What's on your mind? (min 3 chars)"
+        placeholder="Type your thoughts here..."
         required
         minlength="3"
         maxlength="100"
@@ -32,7 +33,7 @@
   <section class="card observe">
     <div class="card-header">
       <h2>Saved Notes</h2>
-      <button id="clearAllBtn" class="btn-danger">Clear All</button>
+      <button id="clearAllBtn" type="button" class="btn-danger">Clear All</button>
     </div>
     <ul id="notesList"></ul>
   </section>
@@ -46,7 +47,7 @@
 <template id="noteTemplate">
   <li class="note-item">
     <span class="note-text"></span>
-    <button class="delete-btn" title="Delete Note">&times;</button>
+    <button class="delete-btn" type="button" title="Delete Note">&times;</button>
   </li>
 </template>
 

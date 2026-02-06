@@ -1,11 +1,11 @@
 /**
- * MINI NOTES APP - PRESENTATION LAYER
+ * MINI NOTES APP - STYLE LAYER
  */
 
 :root {
   --primary: #2563eb;
   --danger: #dc2626;
-  --warning: #f59e0b; /* Color for the confirmation state */
+  --warning: #f59e0b;
   --bg: #f8fafc;
   --text: #1e293b;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -25,7 +25,6 @@ header {
   background: var(--primary);
   color: white;
   text-align: center;
-  box-shadow: var(--shadow);
 }
 
 main {
@@ -46,15 +45,22 @@ main {
   transition: all 0.5s ease-out;
 }
 
-.card.show {
-  opacity: 1;
-  transform: translateY(0);
+.card.show { opacity: 1; transform: translateY(0); }
+
+/* Label styling to replace the H2 look */
+.form-label {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 input {
@@ -63,6 +69,7 @@ input {
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   margin-bottom: 1rem;
+  font-size: 1rem;
 }
 
 button {
@@ -86,9 +93,7 @@ button {
   color: white;
 }
 
-/** * NEW: Confirmation State 
- * Visual feedback for the double-click workaround 
- */
+/* Logic for the double-confirm pulse */
 .btn-danger.confirming {
   background: var(--warning);
   animation: pulse 1.5s infinite;
