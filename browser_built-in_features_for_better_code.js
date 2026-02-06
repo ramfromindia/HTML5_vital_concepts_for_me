@@ -1,103 +1,107 @@
-// =====================================================
-// Optimized DOM Access & State
-// =====================================================
-const form = document.getElementById("noteForm");
-const input = document.getElementById("noteInput");
-const list = document.getElementById("notes");
-const advice = document.getElementById("advice");
-const template = document.getElementById("noteTemplate");
+/**
+ * MINI NOTES APP - BEHAVIOR LAYER
+ * * Major Functionalities:
+ * 1. State Management: Persists notes to LocalStorage.
+ * 2. Optimized Rendering: Uses DocumentFragments and <template> to batch DOM updates.
+ * 3. Event Delegation: Single listener on parent <ul> handles all child delete actions.
+ * 4. IntersectionObserver: Triggers CSS animations when elements enter viewport.
+ */
 
-// Initialize state from LocalStorage
+// --- DOM References ---
+const noteForm = document.querySelector("#noteForm");
+const noteInput = document.querySelector("#noteInput");
+const notesList = document.querySelector("#notesList");
+const clearAllBtn = document.querySelector("#clearAllBtn");
+const adviceDisplay = document.querySelector("#adviceDisplay");
+const noteTemplate = document.querySelector("#noteTemplate");
+
+// --- State Management ---
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
 /**
- * Renders notes using a DocumentFragment and HTML5 Template.
- * Optimization: Minimizes reflows by updating the DOM in a single batch.
+ * Updates the UI by syncing the current 'notes' array with the DOM.
  */
-function renderNotes() {
+const renderNotes = () => {
+  // Use DocumentFragment to batch DOM injections (Performance+)
   const fragment = document.createDocumentFragment();
-  list.innerHTML = ""; // Clear existing list efficiently
+  notesList.innerHTML = ""; 
 
-  notes.forEach((note, index) => {
-    // Clone the template content for a fresh DOM node
-    const clone = template.content.cloneNode(true);
+  notes.forEach((text, index) => {
+    const clone = noteTemplate.content.cloneNode(true);
     
-    // Security: Use textContent to prevent XSS attacks
-    clone.querySelector(".note-text").textContent = note;
+    // Security: textContent prevents HTML injection (XSS)
+    clone.querySelector(".note-text").textContent = text;
     
-    // Associate the data index with the delete button
-    const deleteBtn = clone.querySelector(".delete-btn");
-    deleteBtn.dataset.index = index;
+    // Attach index to the delete button for delegation
+    const delBtn = clone.querySelector(".delete-btn");
+    delBtn.setAttribute("data-index", index);
     
     fragment.appendChild(clone);
   });
 
-  list.appendChild(fragment);
-}
-
-// =====================================================
-// Event Management (Optimized)
-// =====================================================
-
-// Handle Form Submission
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  
-  // Constraint Validation API check
-  if (!form.checkValidity()) return;
-
-  const newNote = input.value.trim();
-  if (newNote) {
-    notes.push(newNote);
-    updateStorage();
-    input.value = "";
-    renderNotes();
-  }
-});
+  notesList.appendChild(fragment);
+};
 
 /**
- * EVENT DELEGATION: Instead of attaching listeners to every delete button, 
- * we listen on the parent <ul> and identify the target.
+ * Persists the current state to the browser's LocalStorage.
  */
-list.addEventListener("click", (e) => {
-  if (e.target.classList.contains("delete-btn")) {
-    const index = e.target.dataset.index;
-    notes.splice(index, 1);
-    updateStorage();
-    renderNotes();
-  }
-});
-
-// Clear All Functionality with security check
-document.getElementById("clearAll").addEventListener("click", () => {
-  if (notes.length > 0 && confirm("Are you sure you want to delete all notes?")) {
-    notes = [];
-    updateStorage();
-    renderNotes();
-  }
-});
-
-function updateStorage() {
+const syncStorage = () => {
   localStorage.setItem("notes", JSON.stringify(notes));
-}
+};
 
-// =====================================================
-// External APIs & Observers
-// =====================================================
+// --- Event Handlers ---
 
-// Fetch API with error handling
-async function getAdvice() {
-  try {
-    const res = await fetch("https://api.adviceslip.com/advice");
-    const data = await res.json();
-    advice.textContent = data.slip.advice;
-  } catch {
-    advice.textContent = "Could not load advice. Stay positive anyway!";
+// 1. Adding a Note
+noteForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = noteInput.value.trim();
+
+  // Optimized Check: Ensure it's not just spaces
+  if (text) {
+    notes.push(text);
+    syncStorage();
+    renderNotes();
+    noteForm.reset();
   }
-}
+});
 
-// IntersectionObserver for scroll animations
-const observer = new IntersectionObserver((entries) => {
+// 2. Optimized Individual Delete (Event Delegation)
+notesList.addEventListener("click", (e) => {
+  // Check if the clicked element is a delete button
+  const btn = e.target.closest(".delete-btn");
+  if (btn) {
+    const index = parseInt(btn.getAttribute("data-index"));
+    notes.splice(index, 1);
+    syncStorage();
+    renderNotes();
+  }
+});
+
+// 3. Clear All Functionality (Bug Fixed)
+clearAllBtn.addEventListener("click", () => {
+  if (notes.length === 0) return;
+  
+  // Security check before bulk delete
+  if (confirm("Permanently delete all notes?")) {
+    notes = [];
+    syncStorage();
+    renderNotes();
+  }
+});
+
+// 4. Fetch API for Advice
+const fetchAdvice = async () => {
+  try {
+    const response = await fetch("https://api.adviceslip.com/advice");
+    const data = await response.json();
+    adviceDisplay.textContent = `"${data.slip.advice}"`;
+  } catch (err) {
+    adviceDisplay.textContent = "Keep moving forward, even when offline.";
+  }
+};
+
+// 5. IntersectionObserver for Animations
+const scrollObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add("show");
@@ -105,8 +109,7 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-document.querySelectorAll(".observe").forEach(el => observer.observe(el));
-
-// Initial Run
+// --- Initialization ---
+document.querySelectorAll(".observe").forEach(el => scrollObserver.observe(el));
 renderNotes();
-getAdvice();
+fetchAdvice();

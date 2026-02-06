@@ -1,41 +1,52 @@
+/**
+ * MINI NOTES APP - PRESENTATION LAYER
+ * Design System: Clean, card-based UI with mobile-first responsiveness.
+ */
+
 :root {
   --primary: #2563eb;
-  --danger: #ef4444;
+  --primary-hover: #1d4ed8;
+  --danger: #dc2626;
   --bg: #f8fafc;
+  --text: #1e293b;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  line-height: 1.5;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
 }
 
 header {
-  padding: 2rem 1rem;
+  padding: 3rem 1rem;
   background: var(--primary);
   color: white;
   text-align: center;
+  box-shadow: var(--shadow);
 }
 
 main {
-  max-width: 800px;
-  margin: auto;
-  padding: 1rem;
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
   display: grid;
   gap: 1.5rem;
 }
 
+/* Card Styling & Intersection Animation */
 .card {
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  box-shadow: var(--shadow);
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity .5s ease, transform .5s ease;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card.show {
@@ -47,47 +58,57 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
-input, button {
-  padding: .75rem;
-  border-radius: 6px;
-  font-size: 1rem;
-}
-
+/* Form Elements */
 input {
   width: 100%;
-  border: 1px solid #cbd5e1;
+  padding: 0.8rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
   margin-bottom: 1rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
 button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+button:active { transform: scale(0.98); }
+
+.btn-primary {
+  width: 100%;
+  padding: 0.8rem;
   background: var(--primary);
   color: white;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s;
 }
-
-button:hover { opacity: 0.9; }
 
 .btn-danger {
+  padding: 0.5rem 1rem;
   background: var(--danger);
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
+  color: white;
+  font-size: 0.85rem;
 }
 
-ul {
-  padding: 0;
-  list-style: none;
-}
+/* List Item Styling */
+ul { padding: 0; list-style: none; }
 
 .note-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
+  padding: 1rem;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -96,11 +117,9 @@ ul {
 .delete-btn {
   background: #fee2e2;
   color: var(--danger);
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  display: grid;
+  place-items: center;
 }
