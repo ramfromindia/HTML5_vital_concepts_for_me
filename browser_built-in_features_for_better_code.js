@@ -1,6 +1,7 @@
 /**
  * MINI NOTES APP - BEHAVIOR LAYER
- * Includes double-click "Clear All" workaround for VS Code environments.
+ * - Uses Event Delegation for performance
+ * - Implements double-click verification for bulk actions
  */
 
 const noteForm = document.querySelector("#noteForm");
@@ -15,12 +16,20 @@ let clearTimer = null;
 
 const syncStorage = () => localStorage.setItem("notes", JSON.stringify(notes));
 
+/**
+ * Optimized Render Logic
+ * Updates UI and manages visibility of the 'Clear All' button.
+ */
 const renderNotes = () => {
   const fragment = document.createDocumentFragment();
   notesList.innerHTML = ""; 
 
+  // Toggle Clear All button visibility based on note count
+  clearAllBtn.style.visibility = notes.length > 0 ? "visible" : "hidden";
+
   notes.forEach((text, index) => {
     const clone = noteTemplate.content.cloneNode(true);
+    // .textContent is a built-in security measure against XSS
     clone.querySelector(".note-text").textContent = text;
     
     const delBtn = clone.querySelector(".delete-btn");
@@ -31,7 +40,7 @@ const renderNotes = () => {
   notesList.appendChild(fragment);
 };
 
-// Add Note logic
+// Form submission with trim() optimization to ignore empty spaces
 noteForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const text = noteInput.value.trim();
@@ -43,7 +52,7 @@ noteForm.addEventListener("submit", (e) => {
   }
 });
 
-// Individual Delete (Event Delegation)
+// Event Delegation: One listener for all delete buttons
 notesList.addEventListener("click", (e) => {
   const btn = e.target.closest(".delete-btn");
   if (btn) {
@@ -55,24 +64,19 @@ notesList.addEventListener("click", (e) => {
 });
 
 /**
- * Optimized Clear All (VS Code Workaround)
- * First click arming the button, second click executing.
+ * Double-Click confirmation workaround for VS Code / restrictive environments
  */
 clearAllBtn.addEventListener("click", () => {
   if (notes.length === 0) return;
 
   if (clearAllBtn.classList.contains("confirming")) {
-    // Second Click: Execute
     notes = [];
     syncStorage();
     renderNotes();
     resetClearButton();
   } else {
-    // First Click: Arm
     clearAllBtn.classList.add("confirming");
-    clearAllBtn.textContent = "Click again to confirm";
-    
-    // Safety: Reset after 3 seconds of inactivity
+    clearAllBtn.textContent = "Are you sure?";
     clearTimer = setTimeout(resetClearButton, 3000);
   }
 });
@@ -83,25 +87,25 @@ function resetClearButton() {
   clearAllBtn.textContent = "Clear All";
 }
 
-// Fetch Advice API
+// Async Fetch API for advice
 const fetchAdvice = async () => {
   try {
     const res = await fetch("https://api.adviceslip.com/advice");
     const data = await res.json();
     adviceDisplay.textContent = `"${data.slip.advice}"`;
   } catch {
-    adviceDisplay.textContent = "Keep building great things!";
+    adviceDisplay.textContent = "Progress is progress, no matter how small.";
   }
 };
 
-// Scroll Observer for animations
+// IntersectionObserver for smooth scroll-in effects
 const scrollObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) entry.target.classList.add("show");
   });
 }, { threshold: 0.1 });
 
-// Init
+// Initialize App
 document.querySelectorAll(".observe").forEach(el => scrollObserver.observe(el));
 renderNotes();
 fetchAdvice();
