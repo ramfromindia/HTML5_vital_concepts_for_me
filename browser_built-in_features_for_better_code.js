@@ -14,12 +14,34 @@ const advice = document.getElementById("advice");
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
 function renderNotes() {
-  list.innerHTML = "";
-  notes.forEach(note => {
-    const li = document.createElement("li");
-    li.textContent = note;
-    list.appendChild(li);
+  const currentItems = list.children;
+
+  // 1. Create a DocumentFragment: A "virtual" DOM node to batch updates
+  // This prevents the browser from reflowing for every single item added.
+  const fragment = document.createDocumentFragment();
+
+  notes.forEach((note, index) => {
+    // 2. Check if a list item already exists at this position
+    if (currentItems[index]) {
+      // 3. Update existing item if the text has changed
+      if (currentItems[index].textContent !== note) {
+        currentItems[index].textContent = note;
+      }
+    } else {
+      // 4. If no item exists at this index, create a new one
+      const li = document.createElement("li");
+      li.textContent = note;
+      fragment.appendChild(li);
+    }
   });
+
+  // 5. Append all new items at once
+  list.appendChild(fragment);
+
+  // 6. Remove any leftover items if the new notes array is shorter than the old one
+  while (list.children.length > notes.length) {
+    list.removeChild(list.lastChild);
+  }
 }
 
 renderNotes();
