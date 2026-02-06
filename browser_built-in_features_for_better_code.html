@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Notes App</title>
+  <title>Optimized Mini Notes</title>
   <link rel="stylesheet" href="browser_built-in_features_for_better_code.css">
 </head>
 <body>
@@ -14,38 +14,39 @@
 
 <main>
   <section class="card observe">
-    <h2>Add Note</h2>
+    <h2>Add New Note</h2>
     <form id="noteForm">
       <input
         type="text"
         id="noteInput"
-        placeholder="Write something…"
+        placeholder="What's on your mind? (min 3 chars)"
         required
         minlength="3"
-        maxlength="100" 
+        maxlength="100"
+        autocomplete="off"
       >
-      <button type="submit">Add Note</button>
+      <button type="submit" class="btn-primary">Add Note</button>
     </form>
   </section>
 
   <section class="card observe">
     <div class="card-header">
       <h2>Saved Notes</h2>
-      <button id="clearAll" class="btn-danger" data-action="clear-all">Clear All</button>
+      <button id="clearAllBtn" class="btn-danger">Clear All</button>
     </div>
-    <ul id="notes"></ul>
+    <ul id="notesList"></ul>
   </section>
 
   <section class="card observe">
-    <h2>Random Advice</h2>
-    <p id="advice">Loading…</p>
+    <h2>Daily Advice</h2>
+    <p id="adviceDisplay">Gathering wisdom...</p>
   </section>
 </main>
 
 <template id="noteTemplate">
   <li class="note-item">
     <span class="note-text"></span>
-    <button class="delete-btn" aria-label="Delete note">&times;</button>
+    <button class="delete-btn" title="Delete Note">&times;</button>
   </li>
 </template>
 
