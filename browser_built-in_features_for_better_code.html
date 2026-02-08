@@ -2,22 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
+  <!-- Responsive layout for mobile & desktop -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Optimized Mini Notes</title>
   <link rel="stylesheet" href="browser_built-in_features_for_better_code.css">
 </head>
 <body>
 
-  <!--Tags like <header>, <main>, and <section> don't just look better; they communicate the hierarchy of your application to bots and assistive technologies--making your app more accessible and SEO-friendly.-->
+<!--
+Semantic tags (<header>, <main>, <section>) communicate structure
+to browsers, search engines, and assistive technologies.
+This is your FIRST accessibility layer — ARIA comes later only if needed.
+-->
 <header>
   <h1>My Notes</h1>
 </header>
 
 <main>
-  
+
   <section class="card observe">
     <form id="noteForm">
+
+      <!--
+Using <label for> creates an explicit association with the input.
+Screen readers announce this automatically.
+-->
       <label for="noteInput" class="form-label">Create a New Note</label>
+
       <input
         type="text"
         id="noteInput"
@@ -26,7 +39,9 @@
         minlength="3"
         maxlength="100"
         autocomplete="off"
+        autofocus
       >
+
       <button type="submit" class="btn-primary">Add Note</button>
     </form>
   </section>
@@ -34,24 +49,64 @@
   <section class="card observe">
     <div class="card-header">
       <h2>Saved Notes</h2>
-      <button id="clearAllBtn" type="button" class="btn-danger">Clear All</button>
+
+      <!--
+aria-pressed represents a toggle-like state.
+Your JS will flip this during confirmation ("Are you sure?")
+This makes state changes visible to assistive tech.
+-->
+      <button
+        id="clearAllBtn"
+        type="button"
+        class="btn-danger"
+        aria-pressed="false"
+      >
+        Clear All
+      </button>
     </div>
+
     <ul id="notesList"></ul>
   </section>
 
   <section class="card observe">
     <h2>Daily Advice</h2>
-    <p id="adviceDisplay">Gathering wisdom...</p>
+
+    <!--
+aria-live="polite" tells screen readers:
+"Announce this text when it changes."
+
+Important because this content updates asynchronously via Fetch API.
+Without this, screen reader users would never hear the new advice.
+-->
+    <p id="adviceDisplay" aria-live="polite">
+      Gathering wisdom...
+    </p>
   </section>
+
 </main>
 
-<!--template is a powerful "hidden" feature of modern browsers. It stays inactive until you need it, saving memory.--> 
-
+<!--
+<template> is a browser-native inert container.
+It does not render until cloned via JavaScript,
+saving memory and improving performance.
+-->
 <template id="noteTemplate">
   <li class="note-item">
     <span class="note-text"></span>
-<!----&times; is a special character that represents the multiplication sign (×). In the context of a delete button, it visually indicates the action of removing or closing an item. It's a common symbol used in user interfaces to signify deletion or dismissal. Unicode representation U+00D7---->
-    <button class="delete-btn" type="button" title="Delete Note">&times;</button>
+
+    <!--
+This button only shows a visual ×.
+aria-label provides a readable name ("Delete note")
+so screen readers don’t announce it as "times".
+-->
+    <button
+      class="delete-btn"
+      type="button"
+      title="Delete Note"
+      aria-label="Delete note"
+    >
+      &times;
+    </button>
   </li>
 </template>
 
