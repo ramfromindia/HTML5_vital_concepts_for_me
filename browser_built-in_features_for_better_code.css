@@ -1,5 +1,6 @@
 /**
- * MINI NOTES APP - STYLE LAYER
+ * MINI NOTES APP - ENHANCED STYLE LAYER
+ * Focus: Accessibility, robustness, minimal overhead
  */
 
 :root {
@@ -11,13 +12,20 @@
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-* { box-sizing: border-box; }
+/* Universal box sizing for predictable layouts */
+* {
+  box-sizing: border-box;
+}
 
+/* Base typography + readability */
 body {
   margin: 0;
   font-family: 'Segoe UI', system-ui, sans-serif;
   background-color: var(--bg);
   color: var(--text);
+
+  /* Improves readability across devices and fonts */
+  line-height: 1.5;
 }
 
 header {
@@ -35,6 +43,8 @@ main {
   gap: 1.5rem;
 }
 
+/* Card animation uses explicit properties instead of "all"
+   (avoids accidental future animations) */
 .card {
   background: white;
   padding: 1.5rem;
@@ -42,12 +52,16 @@ main {
   box-shadow: var(--shadow);
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.5s ease-out;
+
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
-.card.show { opacity: 1; transform: translateY(0); }
+.card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-/* Label styling to replace the H2 look */
+/* Label styled visually like a heading while remaining semantic */
 .form-label {
   display: block;
   font-size: 1.5rem;
@@ -72,12 +86,29 @@ input {
   font-size: 1rem;
 }
 
+/* Native validation feedback — zero JS */
+input:invalid {
+  border-color: var(--danger);
+}
+
+input:valid {
+  border-color: #16a34a;
+}
+
+/* Shared button behavior */
 button {
   cursor: pointer;
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Highly visible keyboard focus ring (WCAG friendly)
+   Only appears for keyboard users */
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
 }
 
 .btn-primary {
@@ -93,7 +124,7 @@ button {
   color: white;
 }
 
-/* Logic for the double-confirm pulse */
+/* Confirmation pulse animation */
 .btn-danger.confirming {
   background: var(--warning);
   animation: pulse 1.5s infinite;
@@ -105,7 +136,19 @@ button {
   100% { transform: scale(1); }
 }
 
-ul { padding: 0; list-style: none; }
+/* Respect OS-level reduced motion preferences
+   Automatically disables animations for sensitive users */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
 
 .note-item {
   display: flex;
@@ -115,11 +158,17 @@ ul { padding: 0; list-style: none; }
   border-bottom: 1px solid #f1f5f9;
 }
 
+/* Delete button:
+   - Increased tap target for mobile accessibility
+   - High contrast colors
+*/
 .delete-btn {
-  background: #fee2e2;
-  color: var(--danger);
-  width: 28px;
-  height: 28px;
+  background: var(--danger);
+  color: white;
+
+  min-width: 44px;
+  min-height: 44px;
+
   border-radius: 50%;
   display: flex;
   align-items: center;
