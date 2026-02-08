@@ -26,8 +26,18 @@ This is your FIRST accessibility layer — ARIA comes later only if needed.
     <form id="noteForm">
 
       <!--
-Using <label for> creates an explicit association with the input.
+<label for> explicitly connects the label to the input.
 Screen readers announce this automatically.
+-->
+     <!--
+autofocus asks the browser to focus this field on page load.
+Modern browsers may ignore this for UX reasons,
+so autofocus is best-effort, not guaranteed.
+-->
+<!--
+inputmode hints mobile browsers which keyboard to show.
+"text" keeps a normal typing keyboard even if type="text" already exists.
+Small UX win on phones.
 -->
       <label for="noteInput" class="form-label">Create a New Note</label>
 
@@ -38,8 +48,9 @@ Screen readers announce this automatically.
         required
         minlength="3"
         maxlength="100"
-        autocomplete="off"
-        autofocus
+        autocomplete="off"   
+        autofocus       
+        inputmode="text"
       >
 
       <button type="submit" class="btn-primary">Add Note</button>
@@ -53,7 +64,7 @@ Screen readers announce this automatically.
       <!--
 aria-pressed represents a toggle-like state.
 Your JS will flip this during confirmation ("Are you sure?")
-This makes state changes visible to assistive tech.
+This exposes visual state changes to assistive technologies.
 -->
       <button
         id="clearAllBtn"
