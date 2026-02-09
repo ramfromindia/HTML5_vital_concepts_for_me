@@ -1,46 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- no-js class allows CSS fallback if JavaScript fails -->
+<html lang="en" class="no-js">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
 
-  <!-- Responsive layout for mobile & desktop -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Makes layout responsive on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Optimized Mini Notes</title>
-  <link rel="stylesheet" href="browser_built-in_features_for_better_code.css">
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="browser_built-in_features_for_better_code.css" />
 </head>
+
 <body>
 
-<!--
-Semantic tags (<header>, <main>, <section>) communicate structure
-to browsers, search engines, and assistive technologies.
-This is your FIRST accessibility layer — ARIA comes later only if needed.
--->
 <header>
+  <!-- App title -->
   <h1>My Notes</h1>
 </header>
 
 <main>
 
+  <!-- New note input card -->
   <section class="card observe">
     <form id="noteForm">
 
-      <!--
-<label for> explicitly connects the label to the input.
-Screen readers announce this automatically.
--->
-     <!--
-autofocus asks the browser to focus this field on page load.
-Modern browsers may ignore this for UX reasons,
-so autofocus is best-effort, not guaranteed.
--->
-<!--
-inputmode hints mobile browsers which keyboard to show.
-"text" keeps a normal typing keyboard even if type="text" already exists.
-Small UX win on phones.
--->
+      <!-- Label explicitly connected to input for accessibility -->
       <label for="noteInput" class="form-label">Create a New Note</label>
 
+      <!--
+        Required text field
+        minlength / maxlength handled natively by browser
+      -->
       <input
         type="text"
         id="noteInput"
@@ -48,24 +40,25 @@ Small UX win on phones.
         required
         minlength="3"
         maxlength="100"
-        autocomplete="off"   
-        autofocus       
+        autocomplete="off"
+        autofocus
         inputmode="text"
-      >
+      />
 
+      <!-- Submits form -->
       <button type="submit" class="btn-primary">Add Note</button>
     </form>
   </section>
 
+  <!-- Saved notes section -->
   <section class="card observe">
     <div class="card-header">
       <h2>Saved Notes</h2>
 
       <!--
-aria-pressed represents a toggle-like state.
-Your JS will flip this during confirmation ("Are you sure?")
-This exposes visual state changes to assistive technologies.
--->
+        aria-pressed toggled by JS during confirmation
+        Improves screen reader feedback
+      -->
       <button
         id="clearAllBtn"
         type="button"
@@ -76,19 +69,15 @@ This exposes visual state changes to assistive technologies.
       </button>
     </div>
 
+    <!-- Notes injected here by JS -->
     <ul id="notesList"></ul>
   </section>
 
+  <!-- Async advice section -->
   <section class="card observe">
     <h2>Daily Advice</h2>
 
-    <!--
-aria-live="polite" tells screen readers:
-"Announce this text when it changes."
-
-Important because this content updates asynchronously via Fetch API.
-Without this, screen reader users would never hear the new advice.
--->
+    <!-- aria-live announces text changes to screen readers -->
     <p id="adviceDisplay" aria-live="polite">
       Gathering wisdom...
     </p>
@@ -97,19 +86,14 @@ Without this, screen reader users would never hear the new advice.
 </main>
 
 <!--
-<template> is a browser-native inert container.
-It does not render until cloned via JavaScript,
-saving memory and improving performance.
+Template is inert HTML.
+JS clones this for each note (fast + clean)
 -->
 <template id="noteTemplate">
   <li class="note-item">
     <span class="note-text"></span>
 
-    <!--
-This button only shows a visual ×.
-aria-label provides a readable name ("Delete note")
-so screen readers don’t announce it as "times".
--->
+    <!-- aria-label gives readable name to × icon -->
     <button
       class="delete-btn"
       type="button"
@@ -121,6 +105,8 @@ so screen readers don’t announce it as "times".
   </li>
 </template>
 
+<!-- Main behavior layer -->
 <script src="browser_built-in_features_for_better_code.js"></script>
+
 </body>
 </html>
