@@ -1,8 +1,4 @@
-/**
- * MINI NOTES APP - ENHANCED STYLE LAYER
- * Focus: Accessibility, robustness, minimal overhead
- */
-
+/* CSS variables for easy theme control */
 :root {
   --primary: #2563eb;
   --danger: #dc2626;
@@ -12,22 +8,21 @@
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Universal box sizing for predictable layouts */
+/* Predictable sizing everywhere */
 * {
   box-sizing: border-box;
 }
 
-/* Base typography + readability */
+/* Base page styling */
 body {
   margin: 0;
   font-family: 'Segoe UI', system-ui, sans-serif;
   background-color: var(--bg);
   color: var(--text);
-
-  /* Improves readability across devices and fonts */
   line-height: 1.5;
 }
 
+/* Header bar */
 header {
   padding: 2.5rem 1rem;
   background: var(--primary);
@@ -35,6 +30,7 @@ header {
   text-align: center;
 }
 
+/* Main content container */
 main {
   max-width: 700px;
   margin: 2rem auto;
@@ -43,28 +39,48 @@ main {
   gap: 1.5rem;
 }
 
-
-.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Label styled visually like a heading while remaining semantic */
+/* Styled label */
 .form-label {
   display: block;
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--text);
 }
 
+/* Card layout + initial hidden state */
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+
+  opacity: 0;
+  transform: translateY(20px);
+
+  /* Explicit transitions (avoids animating everything) */
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+/* If JS fails, show everything */
+.no-js .card {
+  opacity: 1;
+  transform: none;
+}
+
+/* Added by JS when element scrolls into view */
+.card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Header inside cards */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
+/* Text input styling */
 input {
   width: 100%;
   padding: 0.8rem;
@@ -74,12 +90,13 @@ input {
   font-size: 1rem;
 }
 
-/* Native validation feedback — zero JS */
+/* Browser-native validation feedback */
 input:invalid {
   border-color: var(--danger);
 }
 
-input:valid {
+/* Only turn green after user types */
+input:valid:not(:placeholder-shown) {
   border-color: #16a34a;
 }
 
@@ -92,13 +109,13 @@ button {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-/* Highly visible keyboard focus ring (WCAG friendly)
-   Only appears for keyboard users */
+/* Keyboard-only focus ring */
 :focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 2px;
 }
 
+/* Primary action button */
 .btn-primary {
   width: 100%;
   padding: 0.8rem;
@@ -106,26 +123,25 @@ button {
   color: white;
 }
 
+/* Danger actions */
 .btn-danger {
   padding: 0.5rem 1rem;
   background: var(--danger);
   color: white;
 }
 
-/* Confirmation pulse animation */
+/* Confirmation animation */
 .btn-danger.confirming {
   background: var(--warning);
   animation: pulse 1.5s infinite;
 }
 
+/* Subtle scale pulse */
 @keyframes pulse {
-  0% { transform: scale(1); }
   50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
 }
 
-/* Respect OS-level reduced motion preferences
-   Automatically disables animations for sensitive users */
+/* Honors OS reduced-motion setting */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
@@ -133,11 +149,13 @@ button {
   }
 }
 
+/* Remove default list styles */
 ul {
   padding: 0;
   list-style: none;
 }
 
+/* Individual note row */
 .note-item {
   display: flex;
   justify-content: space-between;
@@ -146,17 +164,12 @@ ul {
   border-bottom: 1px solid #f1f5f9;
 }
 
-/* Delete button:
-   - Increased tap target for mobile accessibility
-   - High contrast colors
-*/
+/* Circular delete button (44px min tap target) */
 .delete-btn {
   background: var(--danger);
   color: white;
-
   min-width: 44px;
   min-height: 44px;
-
   border-radius: 50%;
   display: flex;
   align-items: center;

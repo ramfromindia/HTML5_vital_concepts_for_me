@@ -1,9 +1,7 @@
-/**
- * MINI NOTES APP - BEHAVIOR LAYER
- * - Uses Event Delegation for performance
- * - Implements double-click verification for bulk actions
- */
+/* Remove CSS fallback once JS is running */
+document.documentElement.classList.remove("no-js");
 
+/* Cache DOM nodes */
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const notesList = document.querySelector("#notesList");
@@ -11,63 +9,73 @@ const clearAllBtn = document.querySelector("#clearAllBtn");
 const adviceDisplay = document.querySelector("#adviceDisplay");
 const noteTemplate = document.querySelector("#noteTemplate");
 
+/* Load notes from localStorage or start empty */
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 let clearTimer = null;
 
-const syncStorage = () => localStorage.setItem("notes", JSON.stringify(notes));
+/* Persist notes */
+const syncStorage = () =>
+  localStorage.setItem("notes", JSON.stringify(notes));
 
-/**
- * Optimized Render Logic
- * Updates UI and manages visibility of the 'Clear All' button.
- */
+/* Creates note objects with unique IDs */
+const createNote = text => ({
+  id: crypto.randomUUID(),
+  text
+});
+
+/* Renders notes using DocumentFragment for performance */
 const renderNotes = () => {
   const fragment = document.createDocumentFragment();
-  notesList.innerHTML = ""; 
+  notesList.innerHTML = "";
 
-  // Toggle Clear All button visibility based on note count
-  clearAllBtn.style.visibility = notes.length > 0 ? "visible" : "hidden";
+  /* Hide Clear All if no notes */
+  clearAllBtn.style.visibility = notes.length ? "visible" : "hidden";
 
-  notes.forEach((text, index) => {
+  for (const note of notes) {
     const clone = noteTemplate.content.cloneNode(true);
-    // .textContent is a built-in security measure against XSS
-    clone.querySelector(".note-text").textContent = text;
-    
-    const delBtn = clone.querySelector(".delete-btn");
-    delBtn.setAttribute("data-index", index);
-    
+
+    /* textContent prevents XSS */
+    clone.querySelector(".note-text").textContent = note.text;
+
+    /* Store id on delete button */
+    clone.querySelector(".delete-btn").dataset.id = note.id;
+
     fragment.appendChild(clone);
-  });
+  }
+
   notesList.appendChild(fragment);
 };
 
-// Form submission with trim() optimization to ignore empty spaces
-noteForm.addEventListener("submit", (e) => {
+/* Handle form submission */
+noteForm.addEventListener("submit", e => {
   e.preventDefault();
+
   const text = noteInput.value.trim();
-  if (text) {
-    notes.push(text);
-    syncStorage();
-    renderNotes();
-    noteForm.reset();
-  }
+  if (!text) return;
+
+  notes.push(createNote(text));
+  syncStorage();
+  renderNotes();
+  noteForm.reset();
 });
 
-// Event Delegation: One listener for all delete buttons
-notesList.addEventListener("click", (e) => {
+/* Event delegation for delete buttons */
+notesList.addEventListener("click", e => {
   const btn = e.target.closest(".delete-btn");
-  if (btn) {
-    const index = parseInt(btn.getAttribute("data-index"));
-    notes.splice(index, 1);
-    syncStorage();
-    renderNotes();
-  }
+  if (!btn) return;
+
+  const id = btn.dataset.id;
+
+  /* Remove by ID (not index) */
+  notes = notes.filter(n => n.id !== id);
+
+  syncStorage();
+  renderNotes();
 });
 
-/**
- * Double-Click confirmation workaround for VS Code / restrictive environments
- */
+/* Double-click style confirmation for Clear All */
 clearAllBtn.addEventListener("click", () => {
-  if (notes.length === 0) return;
+  if (!notes.length) return;
 
   if (clearAllBtn.classList.contains("confirming")) {
     notes = [];
@@ -77,35 +85,53 @@ clearAllBtn.addEventListener("click", () => {
   } else {
     clearAllBtn.classList.add("confirming");
     clearAllBtn.textContent = "Are you sure?";
+    clearAllBtn.setAttribute("aria-pressed", "true");
+
     clearTimer = setTimeout(resetClearButton, 3000);
   }
 });
 
+/* Reset Clear All button state */
 function resetClearButton() {
   clearTimeout(clearTimer);
   clearAllBtn.classList.remove("confirming");
   clearAllBtn.textContent = "Clear All";
+  clearAllBtn.setAttribute("aria-pressed", "false");
 }
 
-// Async Fetch API for advice
-const fetchAdvice = async () => {
+/* Fetches advice asynchronously */
+async function fetchAdvice() {
   try {
     const res = await fetch("https://api.adviceslip.com/advice");
     const data = await res.json();
     adviceDisplay.textContent = `"${data.slip.advice}"`;
   } catch {
-    adviceDisplay.textContent = "Progress is progress, no matter how small.";
+    adviceDisplay.textContent =
+      "Progress is progress, no matter how small.";
   }
-};
+}
 
-// IntersectionObserver for smooth scroll-in effects
-const scrollObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add("show");
-  });
-}, { threshold: 0.1 });
+/* Scroll-in animation using IntersectionObserver */
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+        observer.unobserve(entry.target);
+      }
+    }
+  }, { threshold: 0.1 });
 
-// Initialize App
-document.querySelectorAll(".observe").forEach(el => scrollObserver.observe(el));
+  document.querySelectorAll(".observe").forEach(el =>
+    observer.observe(el)
+  );
+} else {
+  /* Fallback: show everything */
+  document.querySelectorAll(".card").forEach(el =>
+    el.classList.add("show")
+  );
+}
+
+/* Initialize app */
 renderNotes();
 fetchAdvice();
