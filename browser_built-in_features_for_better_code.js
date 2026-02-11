@@ -1,15 +1,5 @@
-/* =========================================================
-   PROGRESSIVE ENHANCEMENT
-   ---------------------------------------------------------
-   If JavaScript is running, remove the no-js class so
-   CSS animations and JS-dependent features can activate.
-========================================================= */
 document.documentElement.classList.remove("no-js");
 
-
-/* =========================================================
-   DOM CACHING
-========================================================= */
 const noteForm = document.querySelector("#noteForm");
 const noteInput = document.querySelector("#noteInput");
 const notesList = document.querySelector("#notesList");
@@ -17,33 +7,17 @@ const clearAllBtn = document.querySelector("#clearAllBtn");
 const adviceDisplay = document.querySelector("#adviceDisplay");
 const noteTemplate = document.querySelector("#noteTemplate");
 
-
-/* =========================================================
-   APPLICATION STATE
-========================================================= */
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 let clearTimer = null;
 
-
-/* =========================================================
-   PERSISTENCE
-========================================================= */
 const syncStorage = () =>
   localStorage.setItem("notes", JSON.stringify(notes));
 
-
-/* =========================================================
-   NOTE FACTORY
-========================================================= */
 const createNote = text => ({
   id: crypto.randomUUID(),
   text
 });
 
-
-/* =========================================================
-   RENDERING ENGINE
-========================================================= */
 const renderNotes = () => {
   const fragment = document.createDocumentFragment();
   notesList.innerHTML = "";
@@ -59,13 +33,8 @@ const renderNotes = () => {
   notesList.appendChild(fragment);
 };
 
-
-/* =========================================================
-   ADD NOTE
-========================================================= */
 noteForm.addEventListener("submit", e => {
   e.preventDefault();
-
   const text = noteInput.value.trim();
   if (!text) return;
 
@@ -75,10 +44,6 @@ noteForm.addEventListener("submit", e => {
   noteForm.reset();
 });
 
-
-/* =========================================================
-   DELETE NOTE
-========================================================= */
 notesList.addEventListener("click", e => {
   const btn = e.target.closest(".delete-btn");
   if (!btn) return;
@@ -88,10 +53,6 @@ notesList.addEventListener("click", e => {
   renderNotes();
 });
 
-
-/* =========================================================
-   CLEAR ALL WITH CONFIRMATION
-========================================================= */
 clearAllBtn.addEventListener("click", () => {
   if (!notes.length) return;
 
@@ -115,10 +76,6 @@ function resetClearButton() {
   clearAllBtn.setAttribute("aria-pressed", "false");
 }
 
-
-/* =========================================================
-   ASYNC DATA FETCH
-========================================================= */
 async function fetchAdvice() {
   try {
     const res = await fetch("https://api.adviceslip.com/advice");
@@ -130,35 +87,32 @@ async function fetchAdvice() {
   }
 }
 
-
 /* =========================================================
-   NEW: JS FALLBACK SCROLL REVEAL
-   ---------------------------------------------------------
-   Used ONLY if browser doesn't support CSS scroll timelines.
-   This replaces IntersectionObserver.
+   NEW: CLEAN PROFESSIONAL SCROLL REVEAL (~15 lines)
+   Uses easing + stagger.
+   Works everywhere.
 ========================================================= */
-if (!CSS.supports("animation-timeline: view()")) {
 
-  // Manual reveal on scroll (lightweight + reliable)
-  const cards = document.querySelectorAll(".card");
+const cards = document.querySelectorAll(".card");
 
-  const revealOnScroll = () => {
-    cards.forEach(card => {
-      const rect = card.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.85) {
-        card.style.opacity = 1;
-        card.style.transform = "translateY(0)";
-      }
-    });
-  };
+const reveal = () => {
+  cards.forEach((card, i) => {
+    if (card.getBoundingClientRect().top < window.innerHeight * 0.85) {
 
-  window.addEventListener("scroll", revealOnScroll);
-  revealOnScroll(); // run once on load
-}
+      // stagger each card slightly
+      card.style.setProperty("--delay", `${i * 120}ms`);
 
+      card.classList.add("visible");
+    }
+  });
+};
+
+window.addEventListener("scroll", reveal);
+reveal(); // run once on load
 
 /* =========================================================
    APP BOOTSTRAP
 ========================================================= */
+
 renderNotes();
 fetchAdvice();
