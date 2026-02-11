@@ -44,13 +44,21 @@ noteForm.addEventListener("submit", e => {
   noteForm.reset();
 });
 
+/* UPDATED: animated delete */
 notesList.addEventListener("click", e => {
   const btn = e.target.closest(".delete-btn");
   if (!btn) return;
 
-  notes = notes.filter(n => n.id !== btn.dataset.id);
-  syncStorage();
-  renderNotes();
+  const item = btn.closest(".note-item");
+
+  // NEW: play exit animation before removing
+  item.classList.add("removing");
+
+  setTimeout(() => {
+    notes = notes.filter(n => n.id !== btn.dataset.id);
+    syncStorage();
+    renderNotes();
+  }, 300);
 });
 
 clearAllBtn.addEventListener("click", () => {
@@ -88,9 +96,7 @@ async function fetchAdvice() {
 }
 
 /* =========================================================
-   NEW: CLEAN PROFESSIONAL SCROLL REVEAL (~15 lines)
-   Uses easing + stagger.
-   Works everywhere.
+   CLEAN PROFESSIONAL SCROLL REVEAL + STAGGER
 ========================================================= */
 
 const cards = document.querySelectorAll(".card");
@@ -98,17 +104,14 @@ const cards = document.querySelectorAll(".card");
 const reveal = () => {
   cards.forEach((card, i) => {
     if (card.getBoundingClientRect().top < window.innerHeight * 0.85) {
-
-      // stagger each card slightly
       card.style.setProperty("--delay", `${i * 120}ms`);
-
       card.classList.add("visible");
     }
   });
 };
 
 window.addEventListener("scroll", reveal);
-reveal(); // run once on load
+reveal();
 
 /* =========================================================
    APP BOOTSTRAP

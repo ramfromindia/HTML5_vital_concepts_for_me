@@ -48,7 +48,7 @@ main {
 }
 
 /* =========================================================
-   UPDATED: PROFESSIONAL SCROLL ANIMATION BASE
+   CARD BASE + SCROLL REVEAL
 ========================================================= */
 
 .card {
@@ -57,25 +57,30 @@ main {
   border-radius: 12px;
   box-shadow: var(--shadow);
 
-  /* Initial hidden state */
   opacity: 0;
   transform: translateY(40px);
 
-  /* Smooth modern easing */
   transition:
     opacity 0.7s cubic-bezier(.22,.61,.36,1),
-    transform 0.7s cubic-bezier(.22,.61,.36,1);
+    transform 0.7s cubic-bezier(.22,.61,.36,1),
+    box-shadow 0.3s ease;
 }
 
-/* Added by JS when card enters viewport */
+/* Activated by JS */
 .card.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* JS sets --delay for staggered animation */
+/* JS injects stagger delay */
 .card {
   transition-delay: var(--delay, 0ms);
+}
+
+/* NEW: subtle hover lift for depth */
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,.12);
 }
 
 /* If JS fails, show everything */
@@ -117,7 +122,14 @@ button {
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+
+  /* NEW: micro interaction feedback */
+  transition: transform .15s ease, opacity .15s ease;
+}
+
+/* NEW: press effect */
+button:active {
+  transform: scale(.96);
 }
 
 /* Keyboard-only focus ring */
@@ -152,27 +164,33 @@ button {
   50% { transform: scale(1.05); }
 }
 
-/* Honors OS reduced-motion setting */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
+/* =========================================================
+   NOTE INSERT / REMOVE ANIMATION
+========================================================= */
 
-/* Remove default list styles */
-ul {
-  padding: 0;
-  list-style: none;
-}
-
-/* Individual note row */
 .note-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
   border-bottom: 1px solid #f1f5f9;
+
+  /* NEW: animated entrance */
+  animation: noteIn .4s ease forwards;
+}
+
+@keyframes noteIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* NEW: exit animation before JS removes node */
+.note-item.removing {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: .3s ease;
 }
 
 /* Circular delete button */
@@ -185,4 +203,18 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Honors OS reduced-motion setting */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Remove default list styles */
+ul {
+  padding: 0;
+  list-style: none;
 }
