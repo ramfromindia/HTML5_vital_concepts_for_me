@@ -5,7 +5,7 @@
   --warning: #f59e0b;
   --bg: #f8fafc;
   --text: #1e293b;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
 }
 
 /* Predictable sizing everywhere using html inheritance pattern */
@@ -38,7 +38,7 @@ header {
 
 /* Main content container */
 main {
-  max-width: 700px;
+  max-width: 43.75rem;
   margin: 2rem auto;
   padding: 0 1rem;
   display: grid;
@@ -60,11 +60,11 @@ main {
 .card {
   background: white;
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 0.75rem;
   box-shadow: var(--shadow);
 
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(2.5rem);
 
   transition:
     opacity 0.7s cubic-bezier(.22,.61,.36,1),
@@ -85,8 +85,8 @@ main {
 
 /* NEW: subtle hover lift for depth */
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0,0,0,.12);
+  transform: translateY(-0.25rem);
+  box-shadow: 0 0.625rem 1.5625rem rgba(0,0,0,.12);
 }
 
 /* If JS fails, show everything */
@@ -106,8 +106,8 @@ main {
 input {
   width: 100%;
   padding: 0.8rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
+  border: 0.125rem solid #e2e8f0;
+  border-radius: 0.5rem;
   margin-bottom: 1rem;
   font-size: 1rem;
 }
@@ -126,7 +126,7 @@ input:valid:not(:placeholder-shown) {
 button {
   cursor: pointer;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   font-weight: 600;
 
   /* NEW: micro interaction feedback */
@@ -140,8 +140,8 @@ button:active {
 
 /* Keyboard-only focus ring */
 :focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 2px;
+  outline: 0.1875rem solid var(--primary);
+  outline-offset: 0.125rem;
 }
 
 /* Primary action button */
@@ -179,7 +179,7 @@ button:active {
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 0.0625rem solid #f1f5f9;
 
   /* NEW: animated entrance */
   animation: noteIn .4s ease forwards;
@@ -188,14 +188,14 @@ button:active {
 @keyframes noteIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(0.625rem);
   }
 }
 
 /* NEW: exit animation before JS removes node */
 .note-item.removing {
   opacity: 0;
-  transform: translateX(-20px);
+  transform: translateX(-1.25rem);
   transition: .3s ease;
 }
 
@@ -203,8 +203,8 @@ button:active {
 .delete-btn {
   background: var(--danger);
   color: white;
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
