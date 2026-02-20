@@ -8,9 +8,15 @@
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Predictable sizing everywhere */
-* {
+/* Predictable sizing everywhere using html inheritance pattern */
+html {
   box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 /* Base page styling */
@@ -207,7 +213,12 @@ button:active {
 
 /* Honors OS reduced-motion setting */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  .card,
+  .card:hover,
+  button,
+  .btn-danger.confirming,
+  .note-item,
+  .note-item.removing {
     animation: none !important;
     transition: none !important;
   }
