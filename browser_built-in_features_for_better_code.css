@@ -1,14 +1,28 @@
-/* CSS variables for easy theme control */
+/* =========================================================
+   DESIGN TOKENS
+   ---------------------------------------------------------
+   Centralized variables = easy theming + zero runtime cost
+========================================================= */
 :root {
   --primary: #2563eb;
   --danger: #dc2626;
   --warning: #f59e0b;
+  --success: #16a34a; /* NEW: extracted success color */
+
   --bg: #f8fafc;
   --text: #1e293b;
-  --shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+
+  /* NEW: shadow tokenized for reuse + consistency */
+  --shadow-sm: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 0.625rem 1.5625rem rgba(0,0,0,.12);
+
+  /* NEW: animation timing standardized */
+  --ease: cubic-bezier(.22,.61,.36,1);
 }
 
-/* Predictable sizing everywhere using html inheritance pattern */
+/* =========================================================
+   BOX MODEL RESET (html inheritance pattern — already good)
+========================================================= */
 html {
   box-sizing: border-box;
 }
@@ -19,16 +33,21 @@ html {
   box-sizing: inherit;
 }
 
-/* Base page styling */
+/* =========================================================
+   BASE
+========================================================= */
 body {
   margin: 0;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; /* NEW: better fallback order */
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.5;
+  text-rendering: optimizeLegibility; /* NEW: subtle typography improvement */
 }
 
-/* Header bar */
+/* =========================================================
+   HEADER
+========================================================= */
 header {
   padding: 2.5rem 1rem;
   background: var(--primary);
@@ -36,7 +55,9 @@ header {
   text-align: center;
 }
 
-/* Main content container */
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
 main {
   max-width: 43.75rem;
   margin: 2rem auto;
@@ -45,7 +66,9 @@ main {
   gap: 1.5rem;
 }
 
-/* Styled label */
+/* =========================================================
+   FORM LABEL
+========================================================= */
 .form-label {
   display: block;
   font-size: 1.5rem;
@@ -54,55 +77,57 @@ main {
 }
 
 /* =========================================================
-   CARD BASE + SCROLL REVEAL
+   CARD COMPONENT
 ========================================================= */
 
 .card {
   background: white;
   padding: 1.5rem;
   border-radius: 0.75rem;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-sm);
 
   opacity: 0;
-  transform: translateY(2.5rem);
+  transform: translate3d(0, 2.5rem, 0); /* NEW: GPU accelerated */
 
   transition:
-    opacity 0.7s cubic-bezier(.22,.61,.36,1),
-    transform 0.7s cubic-bezier(.22,.61,.36,1),
-    box-shadow 0.3s ease;
+    opacity .7s var(--ease),
+    transform .7s var(--ease),
+    box-shadow .3s ease;
+
+  transition-delay: var(--delay, 0ms);
+
+  will-change: transform, opacity; /* NEW: hint compositor for smoother entry */
 }
 
-/* Activated by JS */
 .card.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0,0,0);
 }
 
-/* JS injects stagger delay */
-.card {
-  transition-delay: var(--delay, 0ms);
-}
-
-/* NEW: subtle hover lift for depth */
+/* Hover lift */
 .card:hover {
-  transform: translateY(-0.25rem);
-  box-shadow: 0 0.625rem 1.5625rem rgba(0,0,0,.12);
+  transform: translate3d(0,-0.25rem,0);
+  box-shadow: var(--shadow-lg);
 }
 
-/* If JS fails, show everything */
+/* Fallback if JS fails */
 .no-js .card {
   opacity: 1;
   transform: none;
 }
 
-/* Header inside cards */
+/* =========================================================
+   CARD HEADER
+========================================================= */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Text input styling */
+/* =========================================================
+   INPUTS
+========================================================= */
 input {
   width: 100%;
   padding: 0.8rem;
@@ -112,39 +137,38 @@ input {
   font-size: 1rem;
 }
 
-/* Browser-native validation feedback */
+/* Native validation */
 input:invalid {
   border-color: var(--danger);
 }
 
-/* Only turn green after user types */
+/* NEW: uses variable instead of hardcoded green */
 input:valid:not(:placeholder-shown) {
-  border-color: #16a34a;
+  border-color: var(--success);
 }
 
-/* Shared button behavior */
+/* =========================================================
+   BUTTONS
+========================================================= */
 button {
   cursor: pointer;
   border: none;
   border-radius: 0.5rem;
   font-weight: 600;
 
-  /* NEW: micro interaction feedback */
   transition: transform .15s ease, opacity .15s ease;
 }
 
-/* NEW: press effect */
 button:active {
   transform: scale(.96);
 }
 
-/* Keyboard-only focus ring */
+/* Accessible keyboard focus */
 :focus-visible {
   outline: 0.1875rem solid var(--primary);
   outline-offset: 0.125rem;
 }
 
-/* Primary action button */
 .btn-primary {
   width: 100%;
   padding: 0.8rem;
@@ -152,26 +176,24 @@ button:active {
   color: white;
 }
 
-/* Danger actions */
 .btn-danger {
   padding: 0.5rem 1rem;
   background: var(--danger);
   color: white;
 }
 
-/* Confirmation animation */
 .btn-danger.confirming {
   background: var(--warning);
   animation: pulse 1.5s infinite;
 }
 
-/* Subtle scale pulse */
+/* Pulse simplified (less layout stress) */
 @keyframes pulse {
   50% { transform: scale(1.05); }
 }
 
 /* =========================================================
-   NOTE INSERT / REMOVE ANIMATION
+   NOTES
 ========================================================= */
 
 .note-item {
@@ -179,27 +201,25 @@ button:active {
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem;
-  border-bottom: 0.0625rem solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
 
-  /* NEW: animated entrance */
   animation: noteIn .4s ease forwards;
 }
 
 @keyframes noteIn {
   from {
     opacity: 0;
-    transform: translateY(0.625rem);
+    transform: translate3d(0,.625rem,0); /* GPU path */
   }
 }
 
-/* NEW: exit animation before JS removes node */
 .note-item.removing {
   opacity: 0;
-  transform: translateX(-1.25rem);
+  transform: translate3d(-1.25rem,0,0);
   transition: .3s ease;
 }
 
-/* Circular delete button */
+/* Circular delete */
 .delete-btn {
   background: var(--danger);
   color: white;
@@ -211,21 +231,23 @@ button:active {
   justify-content: center;
 }
 
-/* Honors OS reduced-motion setting */
+/* =========================================================
+   MOTION SAFETY
+========================================================= */
 @media (prefers-reduced-motion: reduce) {
-  .card,
-  .card:hover,
-  button,
-  .btn-danger.confirming,
-  .note-item,
-  .note-item.removing {
+  *,
+  *::before,
+  *::after {
     animation: none !important;
     transition: none !important;
   }
 }
 
-/* Remove default list styles */
+/* =========================================================
+   LIST RESET
+========================================================= */
 ul {
   padding: 0;
+  margin: 0; /* NEW: removed browser default */
   list-style: none;
 }
