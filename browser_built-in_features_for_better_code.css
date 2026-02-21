@@ -1,7 +1,7 @@
 /* =========================================================
    LAYER ORDER (declared once at top)
 ========================================================= */
-@layer reset, base, layout, components, utilities, animations;
+@layer reset, theme, base, layout, components, utilities, animations;
 
 /* =========================================================
    RESET
@@ -22,6 +22,86 @@
     margin: 0;
     list-style: none;
   }
+}
+
+/* =========================================================
+   THEME LAYER
+   ---------------------------------------------------------
+   • System dark/light support
+   • Manual override via data-theme
+   • Token driven (no component duplication)
+========================================================= */
+
+@layer theme {
+
+  /* ---------- DEFAULT (LIGHT) ---------- */
+  :root {
+    color-scheme: light;
+
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --text: #1e293b;
+
+    --primary: #2563eb;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --success: #16a34a;
+
+    --border: #e2e8f0;
+
+    --shadow-sm: 0 0.25rem 0.75rem rgba(0,0,0,.08);
+    --shadow-lg: 0 0.625rem 1.5625rem rgba(0,0,0,.12);
+  }
+
+  /* ---------- AUTO DARK (OS PREFERENCE) ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      color-scheme: dark;
+
+      --bg: #020617;
+      --surface: #020617;
+      --text: #e5e7eb;
+
+      --primary: #60a5fa;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --success: #4ade80;
+
+      --border: #1e293b;
+
+      --shadow-sm: 0 0.25rem 0.75rem rgba(0,0,0,.6);
+      --shadow-lg: 0 1rem 2rem rgba(0,0,0,.7);
+    }
+  }
+
+  /* ---------- MANUAL LIGHT ---------- */
+  [data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --text: #1e293b;
+  }
+
+  /* ---------- MANUAL DARK ---------- */
+  [data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #020617;
+    --surface: #020617;
+    --text: #e5e7eb;
+
+    --primary: #60a5fa;
+    --danger: #f87171;
+    --warning: #fbbf24;
+    --success: #4ade80;
+
+    --border: #1e293b;
+
+    --shadow-sm: 0 0.25rem 0.75rem rgba(0,0,0,.6);
+    --shadow-lg: 0 1rem 2rem rgba(0,0,0,.7);
+  }
+
 }
 
 /* =========================================================
@@ -125,7 +205,7 @@
   }
 
   .card {
-    background: white;
+    background: var(--surface);
     padding: 1.5rem;
     border-radius: .75rem;
     box-shadow: var(--shadow-sm);

@@ -218,6 +218,57 @@ window.addEventListener("scroll", reveal);
 reveal();
 
 /* =========================================================
+   THEME TOGGLE SYSTEM
+========================================================= */
+
+const themeToggle = document.querySelector("#themeToggle");
+const root = document.documentElement;
+
+// Key used for persistence
+const THEME_KEY = "theme";
+
+/*
+  Detect initial theme
+
+  Priority:
+  1. Saved preference
+  2. System preference
+*/
+const getInitialTheme = () => {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved) return saved;
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+/*
+  Apply theme efficiently
+*/
+const applyTheme = theme => {
+  root.dataset.theme = theme;
+  localStorage.setItem(THEME_KEY, theme);
+
+  // Update toggle icon
+  themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+};
+
+/*
+  Initialize theme on load
+*/
+applyTheme(getInitialTheme());
+
+/*
+  Toggle handler
+*/
+themeToggle.addEventListener("click", () => {
+  const current = root.dataset.theme;
+  const next = current === "dark" ? "light" : "dark";
+  applyTheme(next);
+});
+
+/* =========================================================
    APP BOOTSTRAP
 ========================================================= */
 
