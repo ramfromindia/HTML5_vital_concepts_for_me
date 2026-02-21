@@ -294,6 +294,18 @@
       transition: none !important;
     }
   }
+  html {
+  transition: background-color .25s ease, color .25s ease;
+}
+
+.card {
+  transition:
+    background-color .25s ease,
+    color .25s ease,
+    box-shadow .25s ease,
+    opacity .7s var(--ease),
+    transform .7s var(--ease);
+}
 }
 
 /* =========================================================
