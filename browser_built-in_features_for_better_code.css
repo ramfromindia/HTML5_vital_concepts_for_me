@@ -1,253 +1,233 @@
 /* =========================================================
-   DESIGN TOKENS
-   ---------------------------------------------------------
-   Centralized variables = easy theming + zero runtime cost
+   LAYER ORDER (declared once at top)
 ========================================================= */
-:root {
-  --primary: #2563eb;
-  --danger: #dc2626;
-  --warning: #f59e0b;
-  --success: #16a34a; /* NEW: extracted success color */
-
-  --bg: #f8fafc;
-  --text: #1e293b;
-
-  /* NEW: shadow tokenized for reuse + consistency */
-  --shadow-sm: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 0.625rem 1.5625rem rgba(0,0,0,.12);
-
-  /* NEW: animation timing standardized */
-  --ease: cubic-bezier(.22,.61,.36,1);
-}
+@layer reset, base, layout, components, utilities, animations;
 
 /* =========================================================
-   BOX MODEL RESET (html inheritance pattern — already good)
+   RESET
 ========================================================= */
-html {
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
-
-/* =========================================================
-   BASE
-========================================================= */
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif; /* NEW: better fallback order */
-  background-color: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-  text-rendering: optimizeLegibility; /* NEW: subtle typography improvement */
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
-header {
-  padding: 2.5rem 1rem;
-  background: var(--primary);
-  color: white;
-  text-align: center;
-}
-
-/* =========================================================
-   MAIN LAYOUT
-========================================================= */
-main {
-  max-width: 43.75rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  display: grid;
-  gap: 1.5rem;
-}
-
-/* =========================================================
-   FORM LABEL
-========================================================= */
-.form-label {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-/* =========================================================
-   CARD COMPONENT
-========================================================= */
-
-.card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: var(--shadow-sm);
-
-  opacity: 0;
-  transform: translate3d(0, 2.5rem, 0); /* NEW: GPU accelerated */
-
-  transition:
-    opacity .7s var(--ease),
-    transform .7s var(--ease),
-    box-shadow .3s ease;
-
-  transition-delay: var(--delay, 0ms);
-
-  will-change: transform, opacity; /* NEW: hint compositor for smoother entry */
-}
-
-.card.visible {
-  opacity: 1;
-  transform: translate3d(0,0,0);
-}
-
-/* Hover lift */
-.card:hover {
-  transform: translate3d(0,-0.25rem,0);
-  box-shadow: var(--shadow-lg);
-}
-
-/* Fallback if JS fails */
-.no-js .card {
-  opacity: 1;
-  transform: none;
-}
-
-/* =========================================================
-   CARD HEADER
-========================================================= */
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* =========================================================
-   INPUTS
-========================================================= */
-input {
-  width: 100%;
-  padding: 0.8rem;
-  border: 0.125rem solid #e2e8f0;
-  border-radius: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-
-/* Native validation */
-input:invalid {
-  border-color: var(--danger);
-}
-
-/* NEW: uses variable instead of hardcoded green */
-input:valid:not(:placeholder-shown) {
-  border-color: var(--success);
-}
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-
-  transition: transform .15s ease, opacity .15s ease;
-}
-
-button:active {
-  transform: scale(.96);
-}
-
-/* Accessible keyboard focus */
-:focus-visible {
-  outline: 0.1875rem solid var(--primary);
-  outline-offset: 0.125rem;
-}
-
-.btn-primary {
-  width: 100%;
-  padding: 0.8rem;
-  background: var(--primary);
-  color: white;
-}
-
-.btn-danger {
-  padding: 0.5rem 1rem;
-  background: var(--danger);
-  color: white;
-}
-
-.btn-danger.confirming {
-  background: var(--warning);
-  animation: pulse 1.5s infinite;
-}
-
-/* Pulse simplified (less layout stress) */
-@keyframes pulse {
-  50% { transform: scale(1.05); }
-}
-
-/* =========================================================
-   NOTES
-========================================================= */
-
-.note-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.8rem;
-  border-bottom: 1px solid #f1f5f9;
-
-  animation: noteIn .4s ease forwards;
-}
-
-@keyframes noteIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0,.625rem,0); /* GPU path */
+@layer reset {
+  html {
+    box-sizing: border-box;
   }
-}
 
-.note-item.removing {
-  opacity: 0;
-  transform: translate3d(-1.25rem,0,0);
-  transition: .3s ease;
-}
-
-/* Circular delete */
-.delete-btn {
-  background: var(--danger);
-  color: white;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* =========================================================
-   MOTION SAFETY
-========================================================= */
-@media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation: none !important;
-    transition: none !important;
+    box-sizing: inherit;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
   }
 }
 
 /* =========================================================
-   LIST RESET
+   BASE (tokens + element defaults)
 ========================================================= */
-ul {
-  padding: 0;
-  margin: 0; /* NEW: removed browser default */
-  list-style: none;
+@layer base {
+  :root {
+    --primary: #2563eb;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --success: #16a34a;
+
+    --bg: #f8fafc;
+    --text: #1e293b;
+
+    --shadow-sm: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 0.625rem 1.5625rem rgba(0,0,0,.12);
+
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+  }
+
+  input {
+    width: 100%;
+    padding: .8rem;
+    border: .125rem solid #e2e8f0;
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  input:invalid {
+    border-color: var(--danger);
+  }
+
+  input:valid:not(:placeholder-shown) {
+    border-color: var(--success);
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: .5rem;
+    font-weight: 600;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+
+  button:active {
+    transform: scale(.96);
+  }
+
+  :focus-visible {
+    outline: .1875rem solid var(--primary);
+    outline-offset: .125rem;
+  }
+}
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+@layer layout {
+  header {
+    padding: 2.5rem 1rem;
+    background: var(--primary);
+    color: white;
+    text-align: center;
+  }
+
+  main {
+    max-width: 43.75rem;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* =========================================================
+   COMPONENTS
+========================================================= */
+@layer components {
+  .form-label {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: .75rem;
+    box-shadow: var(--shadow-sm);
+
+    opacity: 0;
+    transform: translate3d(0,2.5rem,0);
+
+    transition:
+      opacity .7s var(--ease),
+      transform .7s var(--ease),
+      box-shadow .3s ease;
+
+    transition-delay: var(--delay,0ms);
+    will-change: transform, opacity;
+  }
+
+  .card.visible {
+    opacity: 1;
+    transform: translate3d(0,0,0);
+  }
+
+  .card:hover {
+    transform: translate3d(0,-.25rem,0);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .no-js .card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: .8rem;
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-danger {
+    padding: .5rem 1rem;
+    background: var(--danger);
+    color: white;
+  }
+
+  .btn-danger.confirming {
+    background: var(--warning);
+    animation: pulse 1.5s infinite;
+  }
+
+  .note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .8rem;
+    border-bottom: 1px solid #f1f5f9;
+    animation: noteIn .4s ease forwards;
+  }
+
+  .note-item.removing {
+    opacity: 0;
+    transform: translate3d(-1.25rem,0,0);
+    transition: .3s ease;
+  }
+
+  .delete-btn {
+    background: var(--danger);
+    color: white;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+@layer animations {
+  @keyframes pulse {
+    50% { transform: scale(1.05); }
+  }
+
+  @keyframes noteIn {
+    from {
+      opacity: 0;
+      transform: translate3d(0,.625rem,0);
+    }
+  }
 }
