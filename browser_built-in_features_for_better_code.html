@@ -4,8 +4,25 @@
 <head>
   <meta charset="UTF-8" />
 
-  <!-- Makes layout responsive on mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Responsive layout -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Prevent referrer leakage to third-party APIs -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <!-- Basic clickjacking protection -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+
+  <!-- Minimal Content Security Policy
+       Blocks inline scripts and limits network access -->
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          style-src 'self';
+          script-src 'self';
+          connect-src https://api.adviceslip.com;
+          img-src 'self';
+        " />
 
   <title>Optimized Mini Notes</title>
 
@@ -15,26 +32,43 @@
 
 <body>
 
-<header>
-  <!-- App title -->
+<!-- Skip link for keyboard / screen reader users -->
+<a href="#main" class="skip-link">
+  Skip to main content
+</a>
+
+<header role="banner">
   <h1>My Notes</h1>
-  <button id="themeToggle" type="button" aria-label="Toggle theme">
-  🌙
-</button>
+
+  <!-- aria-expanded updated by JS when toggling theme -->
+  <button
+    id="themeToggle"
+    type="button"
+    aria-label="Toggle color theme"
+    aria-controls="main"
+    aria-expanded="false"
+  >
+    🌙
+  </button>
 </header>
 
-<main>
+<!-- Explicit main landmark -->
+<main id="main" role="main">
 
-  <!-- New note input card -->
-  <section class="card observe">
-    <form id="noteForm">
+  <!-- New note input -->
+  <section class="card observe" aria-labelledby="create-note">
 
-      <!-- Label explicitly connected to input for accessibility -->
-      <label for="noteInput" class="form-label">Create a New Note</label>
+    <form id="noteForm" novalidate>
+      <!-- novalidate prevents browser popups so you control UX -->
+
+      <label id="create-note" for="noteInput" class="form-label">
+        Create a New Note
+      </label>
 
       <!--
-        Required text field
-        minlength / maxlength handled natively by browser
+        aria-describedby connects helper text
+        autocomplete helps assistive tech
+        maxlength limits abuse payload size
       -->
       <input
         type="text"
@@ -44,44 +78,48 @@
         minlength="3"
         maxlength="100"
         autocomplete="off"
-        autofocus
         inputmode="text"
+        aria-describedby="noteHelp"
       />
 
-      <!-- Submits form -->
-      <button type="submit" class="btn-primary">Add Note</button>
+      <small id="noteHelp">
+        Minimum 3 characters. Maximum 100.
+      </small>
+
+      <button type="submit" class="btn-primary">
+        Add Note
+      </button>
     </form>
   </section>
 
-  <!-- Saved notes section -->
-  <section class="card observe">
-    <div class="card-header">
-      <h2>Saved Notes</h2>
+  <!-- Saved notes -->
+  <section class="card observe" aria-labelledby="saved-notes">
 
-      <!--
-        aria-pressed toggled by JS during confirmation
-        Improves screen reader feedback
-      -->
+    <div class="card-header">
+      <h2 id="saved-notes">Saved Notes</h2>
+
+      <!-- aria-pressed communicates destructive confirmation state -->
       <button
         id="clearAllBtn"
         type="button"
         class="btn-danger"
         aria-pressed="false"
+        aria-label="Clear all notes"
       >
         Clear All
       </button>
     </div>
 
-    <!-- Notes injected here by JS -->
-    <ul id="notesList"></ul>
+    <!-- Explicit list role for screen readers -->
+    <ul id="notesList" role="list"></ul>
   </section>
 
-  <!-- Async advice section -->
-  <section class="card observe">
-    <h2>Daily Advice</h2>
+  <!-- Async advice -->
+  <section class="card observe" aria-labelledby="daily-advice">
+    <h2 id="daily-advice">Daily Advice</h2>
 
-    <!-- aria-live announces text changes to screen readers -->
-    <p id="adviceDisplay" aria-live="polite">
+    <!-- role=status announces async updates politely -->
+    <p id="adviceDisplay" role="status" aria-live="polite">
       Gathering wisdom...
     </p>
   </section>
@@ -90,26 +128,26 @@
 
 <!--
 Template is inert HTML.
-JS clones this for each note (fast + clean)
+Prevents XSS because JS assigns textContent (not innerHTML)
 -->
 <template id="noteTemplate">
-  <li class="note-item">
+  <li class="note-item" role="listitem">
     <span class="note-text"></span>
 
-    <!-- aria-label gives readable name to × icon -->
+    <!-- Clear accessible name for icon-only button -->
     <button
       class="delete-btn"
       type="button"
       title="Delete Note"
-      aria-label="Delete note"
+      aria-label="Delete this note"
     >
       &times;
     </button>
   </li>
 </template>
 
-<!-- Main behavior layer -->
-<script src="browser_built-in_features_for_better_code.js"></script>
+<!-- External JS only (required for CSP safety) -->
+<script src="browser_built-in_features_for_better_code.js" defer></script>
 
 </body>
 </html>
