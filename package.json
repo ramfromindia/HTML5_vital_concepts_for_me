@@ -1,0 +1,27 @@
+{
+  "name": "html5_vital_concepts_for_me",
+  "version": "1.0.0",
+  "description": "A comprehensive learning project focused on exploring essential HTML5 features and best practices.",
+  "main": "browser_built-in_features_for_better_code.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --config eslint.config.cjs . --ext .js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramfromindia/HTML5_vital_concepts_for_me.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ramfromindia/HTML5_vital_concepts_for_me/issues"
+  },
+  "homepage": "https://github.com/ramfromindia/HTML5_vital_concepts_for_me#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.2",
+    "eslint-define-config": "^2.1.0"
+  }
+}
