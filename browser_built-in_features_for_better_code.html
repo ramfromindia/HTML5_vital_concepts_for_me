@@ -13,16 +13,43 @@
   <!-- Basic clickjacking protection -->
   <meta http-equiv="X-Frame-Options" content="DENY" />
 
-  <!-- Minimal Content Security Policy
-       Blocks inline scripts and limits network access -->
-  <meta http-equiv="Content-Security-Policy"
-        content="
-          default-src 'self';
-          style-src 'self';
-          script-src 'self';
-          connect-src https://api.adviceslip.com;
-          img-src 'self';
-        " />
+  <!-- ==============================
+     CONTENT SECURITY POLICY (CSP)
+     ==============================
+
+     Blocks XSS, data exfiltration,
+     clickjacking, and injection attacks.
+-->
+
+<meta http-equiv="Content-Security-Policy"
+      content="
+        /* Default: allow only same-origin resources */
+        default-src 'self';
+
+        /* Allow CSS only from this origin (no inline styles) */
+        style-src 'self';
+
+        /* Allow JS only from this origin (blocks inline scripts & eval) */
+        script-src 'self';
+
+        /* Only allow API calls to this trusted endpoint */
+        connect-src 'self' https://api.adviceslip.com;
+
+        /* Allow images only from this origin */
+        img-src 'self';
+
+        /* Prevent <base> tag injection attacks */
+        base-uri 'none';
+
+        /* Restrict where forms can submit */
+        form-action 'self';
+
+        /* Prevent clickjacking (no embedding in iframes) */
+        frame-ancestors 'none';
+
+        /* Disallow plugins like Flash, PDF embeds */
+        object-src 'none';
+      ">
 
   <title>Optimized Mini Notes</title>
 
