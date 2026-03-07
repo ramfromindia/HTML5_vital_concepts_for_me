@@ -46,23 +46,25 @@ const createNote = text => ({
    RENDER NOTES TO DOM
 ========================================================= */
 const renderNotes = () => {
-  // DocumentFragment minimizes layout thrashing
+
   const fragment = document.createDocumentFragment();
 
-  // Clear existing list
-  notesList.innerHTML = "";
+  // Safely clear list (no innerHTML)
+  notesList.replaceChildren();
 
-  // Hide Clear All button when empty
-  clearAllBtn.style.visibility = notes.length ? "visible" : "hidden";
+  clearAllBtn.style.visibility =
+    notes.length ? "visible" : "hidden";
 
-  // Build each note from template
   for (const note of notes) {
-    const clone = noteTemplate.content.cloneNode(true);
 
-    clone.querySelector(".note-text").textContent = note.text;
+    const clone =
+      noteTemplate.content.cloneNode(true);
 
-    // Store ID directly on delete button
-    clone.querySelector(".delete-btn").dataset.id = note.id;
+    clone.querySelector(".note-text").textContent =
+      note.text;
+
+    clone.querySelector(".delete-btn").dataset.id =
+      note.id;
 
     fragment.appendChild(clone);
   }
