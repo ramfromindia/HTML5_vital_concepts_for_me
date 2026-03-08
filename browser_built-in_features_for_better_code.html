@@ -13,14 +13,21 @@ The placeholder {{CSP_NONCE}} must be replaced
 by the backend.
 -->
 
+<!-- Language declaration-->
 <html lang="en" class="no-js">
 
 <head>
-
+<!-- This Defines text encoding-->
 <meta charset="UTF-8">
 
+<!-- It defines the color scheme for the page, helps browsers render:form controls, scrollbars, built-in UI to match your theme system.-->
+<meta name="color-scheme" content="light dark">
+
+<!-- This is required for proper mobile rendering.-->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!-- Same-origin request:Send full URL, Cross-origin request:Send only the origin -->
+ <!-- In other words, only send the origin (protocol + domain + port) in the Referer header for cross-origin requests -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 
 <!-- =========================================================
@@ -44,6 +51,14 @@ object-src 'none';
 upgrade-insecure-requests;
 -->
 
+<!-- Here we use a strict CSP that allows only our own(self) scripts and styles, and connects to a trusted API for advice. We also disable framing and object embedding for added security. -->
+ <!-- In other words,Only allow resources from the same origin as the website itself.
+Origin = protocol + domain + port-->
+<!-- base-uri 'none' blocks malicious <base> tag injection.-->
+ <!-- frame-ancestors 'none' blocks your page from being embedded in: iframe,frame,object,embed-->
+<!-- object-src 'none' blocks dangerous plugins like: Flash, Silverlight, Java applets-->
+<!-- upgrade-insecure-requests forces all HTTP requests to be upgraded to HTTPS. -->   
+<!-- require-trusted-types-for 'script' enforces the use of Trusted Types for all script execution, by blocking dangerous sinks like; innerHTML,outerHTML and insertAdjacentHTML, preventing DOM-based XSS. --> 
 <meta http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
