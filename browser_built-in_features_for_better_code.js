@@ -248,12 +248,19 @@ const getInitialTheme = () => {
 /*
   Apply theme efficiently
 */
+const icon = themeToggle.querySelector("span");
+
 const applyTheme = theme => {
   root.dataset.theme = theme;
+
   localStorage.setItem(THEME_KEY, theme);
 
-  // Update toggle icon
-  themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+  icon.textContent = theme === "dark" ? "☀️" : "🌙";
+
+  themeToggle.setAttribute(
+    "aria-pressed",
+    theme === "dark"
+  );
 };
 
 /*
