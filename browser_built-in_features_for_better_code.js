@@ -261,6 +261,12 @@ const applyTheme = theme => {
     "aria-pressed",
     theme === "dark"
   );
+
+  // Dynamically update the title based on the current theme
+  themeToggle.setAttribute(
+    "title",
+    `Toggle color theme (to ${theme === "dark" ? "light" : "dark"})`
+  );
 };
 
 /*
