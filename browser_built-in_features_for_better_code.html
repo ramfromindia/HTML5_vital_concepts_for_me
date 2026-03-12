@@ -51,25 +51,22 @@ object-src 'none';
 upgrade-insecure-requests;
 -->
 
-<!-- Here we use a strict CSP that allows only our own(self) scripts and styles, and connects to a trusted API for advice. We also disable framing and object embedding for added security. -->
+<!-- Here we use a strict CSP that allows only our own(self) scripts and styles, and connects to a trusted API for advice. We also disable framing  -->
  <!-- In other words,Only allow resources from the same origin as the website itself.
 Origin = protocol + domain + port-->
 <!-- base-uri 'none' blocks malicious <base> tag injection.-->
  <!-- frame-ancestors 'none' blocks your page from being embedded in: iframe,frame,object,embed-->
-<!-- object-src 'none' blocks dangerous plugins like: Flash, Silverlight, Java applets-->
 <!-- upgrade-insecure-requests forces all HTTP requests to be upgraded to HTTPS. -->   
 <!-- require-trusted-types-for 'script' enforces the use of Trusted Types for all script execution, by blocking dangerous sinks like; innerHTML,outerHTML and insertAdjacentHTML, preventing DOM-based XSS. --> 
 <meta http-equiv="Content-Security-Policy"
 content="
-default-src 'self';
+default-src 'none';
 script-src 'self' 'nonce-{{CSP_NONCE}}';
 style-src 'self';
-img-src 'self';
 connect-src 'self' https://api.adviceslip.com;
 base-uri 'none';
 form-action 'self';
 frame-ancestors 'none';
-object-src 'none';
 upgrade-insecure-requests;
 require-trusted-types-for 'script';
 ">
