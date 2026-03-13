@@ -145,13 +145,30 @@ function resetClearButton() {
 async function fetchAdvice() {
   try {
     const res = await fetch("https://api.adviceslip.com/advice");
+
+    // Check for successful response
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status}`);
+    }
+
     const data = await res.json();
 
-    adviceDisplay.textContent = `"${data.slip.advice}"`;
-  } catch {
-    // Graceful fallback if network fails
-    adviceDisplay.textContent =
-      "Progress is progress, no matter how small.";
+    // Validate response structure and data
+    if (!data || typeof data !== 'object' || !data.slip || typeof data.slip.advice !== 'string' || data.slip.advice.trim().length === 0) {
+      throw new Error('Invalid API response structure');
+    }
+
+    // Optional: Sanitize or limit length for security
+    const advice = data.slip.advice.trim();
+    if (advice.length > 500) { // Arbitrary limit to prevent abuse
+      throw new Error('Advice too long');
+    }
+
+    adviceDisplay.textContent = `"${advice}"`;
+  } catch (error) {
+    console.error('Failed to fetch advice:', error);
+    // Graceful fallback
+    adviceDisplay.textContent = "Progress is progress, no matter how small.";
   }
 }
 
