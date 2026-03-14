@@ -111,15 +111,17 @@ Create a New Note
 </label>
 
 <input
-type="text"
-id="noteInput"
-placeholder="Type your thoughts here..."
-required
-minlength="3"
-maxlength="100"
-autocomplete="off"
-inputmode="text"
-aria-describedby="noteHelp"
+  type="text"
+  id="noteInput"
+  placeholder="Type your thoughts here..."
+  required
+  minlength="3"
+  maxlength="100"
+  autocomplete="off"
+  spellcheck="true"
+  pattern="^[A-Za-z0-9\s.,!?'-]+$"
+  inputmode="text"
+  aria-describedby="noteHelp"
 >
 
 <small id="noteHelp">
