@@ -156,11 +156,16 @@ Add Note
 id="clearAllBtn"
 type="button"
 class="btn-danger"
-aria-pressed="false"
-aria-label="Clear all notes"
+aria-label="Clear all notes. Activate twice to confirm."
+aria-describedby="clearAllHelp"
+data-confirm-state="armed"
 >
 Clear All
 </button>
+
+<span id="clearAllHelp" hidden>
+Action requires two clicks. Confirmation resets after 3 seconds.
+</span>
 
 </div>
 
