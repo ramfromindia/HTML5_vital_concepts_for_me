@@ -19,8 +19,14 @@ const noteTemplate = document.querySelector("#noteTemplate");
    LIVE REGION FOR SCREEN READER ANNOUNCEMENTS
 ========================================================= */
 const liveRegion = document.createElement("div");
+
+//aria-live="assertive" ensures important messages are announced immediately
 liveRegion.setAttribute("aria-live", "assertive");
+
+//aria-atomic="true" ensures the entire message is read, not just changes
 liveRegion.setAttribute("aria-atomic", "true");
+
+//sr-only class visually hides the element but keeps it accessible to screen readers
 liveRegion.className = "sr-only";
 document.body.appendChild(liveRegion);
 
