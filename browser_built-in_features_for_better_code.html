@@ -110,19 +110,27 @@ aria-pressed="false"
 Create a New Note
 </label>
 
+<!-- autocapitalize = "sentences" improves typing experience on mobile by
+ capitalizing the first letter of each sentence.-->
+ <!-- enterkeyhint = "send" suggests a "Send" action on the mobile keyboard, enhancing UX.-->
+  <!--inputmode = "text" improves the typing experience on mobile devices by showing the appropriate keyboard for the input type.-->
 <input
   type="text"
   id="noteInput"
   placeholder="Type your thoughts here..."
   required
+  aria-required="true"
   minlength="3"
   maxlength="100"
   autocomplete="off"
+  autocapitalize="sentences"
+  enterkeyhint="send"
   spellcheck="true"
   pattern="^[A-Za-z0-9\s.,!?'-]+$"
   inputmode="text"
+  title="3 to 100 characters; letters, numbers, spaces, and . , ! ? ' - only"
   aria-describedby="noteHelp"
->
+/>
 
 <small id="noteHelp">
 Minimum 3 characters. Maximum 100.
