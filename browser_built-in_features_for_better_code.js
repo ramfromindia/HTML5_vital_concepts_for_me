@@ -16,6 +16,15 @@ const adviceDisplay = document.querySelector("#adviceDisplay");
 const noteTemplate = document.querySelector("#noteTemplate");
 
 /* =========================================================
+   LIVE REGION FOR SCREEN READER ANNOUNCEMENTS
+========================================================= */
+const liveRegion = document.createElement("div");
+liveRegion.setAttribute("aria-live", "assertive");
+liveRegion.setAttribute("aria-atomic", "true");
+liveRegion.className = "sr-only";
+document.body.appendChild(liveRegion);
+
+/* =========================================================
    APPLICATION STATE
 ========================================================= */
 
@@ -52,8 +61,7 @@ const renderNotes = () => {
   // Safely clear list (no innerHTML)
   notesList.replaceChildren();
 
-  clearAllBtn.style.visibility =
-    notes.length ? "visible" : "hidden";
+  clearAllBtn.disabled = !notes.length;
 
   for (const note of notes) {
 
@@ -116,27 +124,35 @@ clearAllBtn.addEventListener("click", () => {
   if (!notes.length) return;
 
   // Second click confirms deletion
-  if (clearAllBtn.classList.contains("confirming")) {
+  if (clearAllBtn.dataset.confirmState === "confirming") {
     notes = [];
     syncStorage();
     renderNotes();
+    liveRegion.textContent = "All notes deleted successfully";
     resetClearButton();
   } else {
     // First click arms confirmation state
-    clearAllBtn.classList.add("confirming");
+    clearAllBtn.dataset.confirmState = "confirming";
     clearAllBtn.textContent = "Are you sure?";
-    clearAllBtn.setAttribute("aria-pressed", "true");
+    clearAllBtn.classList.add("confirming");
+    liveRegion.textContent = "Confirmation mode active. Click again to delete, or wait 3 seconds to cancel";
 
     // Auto-reset after 3 seconds
     clearTimer = setTimeout(resetClearButton, 3000);
   }
 });
 
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && clearAllBtn.dataset.confirmState === "confirming") {
+    resetClearButton();
+  }
+});
+
 function resetClearButton() {
   clearTimeout(clearTimer);
-  clearAllBtn.classList.remove("confirming");
+  clearAllBtn.dataset.confirmState = "armed";
   clearAllBtn.textContent = "Clear All";
-  clearAllBtn.setAttribute("aria-pressed", "false");
+  clearAllBtn.classList.remove("confirming");
 }
 
 /* =========================================================
