@@ -35,6 +35,8 @@ document.body.appendChild(liveRegion);
 ========================================================= */
 
 // Load saved notes from localStorage or start empty
+// "notes" is the key used to store the serialized array of note objects in localStorage. If there are no saved notes, it defaults to an empty array.
+// JSON.parse converts the stored string back into a JavaScript array of note objects.
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
 // Timer used for Clear-All confirmation reset
