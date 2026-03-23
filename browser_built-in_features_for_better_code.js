@@ -202,7 +202,7 @@ async function fetchAdvice() {
       throw new Error('Invalid API response structure');
     }
 
-    // Optional: Sanitize or limit length for security
+    // Sanitize advice text to prevent potential XSS attacks
     const advice = data.slip.advice.trim();
     if (advice.length > 500) { // Arbitrary limit to prevent abuse
       throw new Error('Advice too long');
