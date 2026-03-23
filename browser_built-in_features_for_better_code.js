@@ -48,7 +48,7 @@ let clearTimer = null;
 
 // Sync in-memory notes array to browser storage
 //"notes" is the key under which the serialized array is stored.
-/* Using JSON.stringify to convert the array into a string format suitable for storage.That’s one long string, not an array of strings.*/
+// Using JSON.stringify to convert the array into a string format suitable for storage.That’s one long string, not an array of strings.
 const syncStorage = () =>
   localStorage.setItem("notes", JSON.stringify(notes));
 
