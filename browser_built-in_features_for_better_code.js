@@ -161,17 +161,21 @@ clearAllBtn.addEventListener("click", () => {
     clearTimer = setTimeout(resetClearButton, 3000);
   }
 });
+
 // Allow Escape key to cancel confirmation
 // Adding a keydown event listener to the entire document allows us to listen for the Escape key press regardless of which element is currently focused. This provides a convenient way for users to cancel the clear-all confirmation without needing to click anywhere specific on the page.
-
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && clearAllBtn.dataset.confirmState === "confirming") {
     resetClearButton();
   }
 });
 
+// Resets the clear button to its default state
+// This function is called after a successful clear or when the confirmation times out or is canceled. It ensures that the button's text, state, and styling are returned to their original settings, providing a consistent user experience.
 function resetClearButton() {
   clearTimeout(clearTimer);
+  // Remove confirmation state and reset text
+  //dataset.confirmState is used to track whether the clear-all button is in its normal state or in a confirmation state. By setting it back to "armed", we indicate that the button is ready for a new clear action, and we update the text and styling accordingly.
   clearAllBtn.dataset.confirmState = "armed";
   clearAllBtn.textContent = "Clear All";
   clearAllBtn.classList.remove("confirming");
