@@ -196,6 +196,8 @@ async function fetchAdvice() {
     const data = await res.json();
 
     // Validate response structure and data
+    //data.slip means we expect the API to return an object with a "slip" property, which should itself be an object containing an "advice" property that is a non-empty string. If any of these conditions are not met, we throw an error to prevent displaying invalid or malformed advice.
+    //data.slip.advice means we expect the "slip" object to have an "advice" property, which should be a string containing the advice text. We also check that it's not just whitespace by trimming it and checking its length.
     if (!data || typeof data !== 'object' || !data.slip || typeof data.slip.advice !== 'string' || data.slip.advice.trim().length === 0) {
       throw new Error('Invalid API response structure');
     }
