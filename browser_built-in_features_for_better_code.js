@@ -74,7 +74,15 @@ const renderNotes = () => {
   clearAllBtn.disabled = !notes.length;
 
   for (const note of notes) {
-
+  // Clone template content for each note
+  // Using a template allows us to keep HTML structure in the markup and avoid manual element creation in JS, which is more error-prone and less efficient.
+  // The template element is a special HTML element that holds HTML content that is not rendered immediately. It allows us to define a chunk of HTML that can be cloned and inserted into the document as needed.
+  //content property of the template gives us access to the document fragment that contains the template's children. This is where our note structure is defined in the HTML.
+  // cloneNode(true) creates a deep copy of the template content, including all nested elements. This is crucial for maintaining the structure and styles defined in the template.
+  // After cloning, we can manipulate the cloned content to insert the specific note text and set the appropriate data attributes for deletion.
+  // This approach is more efficient than creating each element manually with createElement and appending them, as it leverages the browser's optimized handling of templates and document fragments.
+  //dataset.id allows us to store the note's unique ID directly on the delete button, making it easy to identify which note to delete when the button is clicked.
+  // By using a document fragment, we minimize the number of reflows and repaints in the browser, as we build the entire list of notes in memory before attaching it to the DOM in one operation.
     const clone =
       noteTemplate.content.cloneNode(true);
 
