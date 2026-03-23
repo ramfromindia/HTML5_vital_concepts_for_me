@@ -161,6 +161,8 @@ clearAllBtn.addEventListener("click", () => {
     clearTimer = setTimeout(resetClearButton, 3000);
   }
 });
+// Allow Escape key to cancel confirmation
+// Adding a keydown event listener to the entire document allows us to listen for the Escape key press regardless of which element is currently focused. This provides a convenient way for users to cancel the clear-all confirmation without needing to click anywhere specific on the page.
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && clearAllBtn.dataset.confirmState === "confirming") {
