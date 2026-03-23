@@ -129,6 +129,8 @@ notesList.addEventListener("click", e => {
 
   // Wait for animation before removing data
   setTimeout(() => {
+    // Filter out the deleted note by ID
+    //dataset.id gives us the unique ID of the note to delete, which we compare against each note in the array. We create a new array that includes all notes except the one with the matching ID.
     notes = notes.filter(n => n.id !== btn.dataset.id);
     syncStorage();
     renderNotes();
