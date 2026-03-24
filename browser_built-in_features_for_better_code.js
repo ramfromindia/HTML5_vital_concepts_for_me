@@ -54,12 +54,32 @@ const syncStorage = () =>
 
 /* =========================================================
    NOTE FACTORY
-   Creates a standardized note object
 ========================================================= */
 const createNote = text => ({
-  id: crypto.randomUUID(), // secure unique ID
+  id: crypto.randomUUID(),
   text
 });
+
+/* =========================================================
+   INPUT VALIDATION (SECOND LINE OF DEFENSE)
+========================================================= */
+const NOTE_RULES = {
+  MIN: 3,
+  MAX: 100,
+  PATTERN: /^[A-Za-z0-9\s.,!?'-]+$/
+};
+
+function validateNoteInput(text) {
+  if (typeof text !== "string") return false;
+
+  const trimmed = text.trim();
+
+  if (trimmed.length < NOTE_RULES.MIN) return false;
+  if (trimmed.length > NOTE_RULES.MAX) return false;
+  if (!NOTE_RULES.PATTERN.test(trimmed)) return false;
+
+  return true;
+}
 
 /* =========================================================
    RENDER NOTES TO DOM
@@ -98,20 +118,21 @@ const renderNotes = () => {
   notesList.appendChild(fragment);
 };
 
-/* =========================================================
-   ADD NOTE HANDLER
-========================================================= */
 noteForm.addEventListener("submit", e => {
   e.preventDefault();
 
-  const text = noteInput.value.trim();
-  if (!text) return;
+  const raw = noteInput.value;
+  const text = raw.trim();
+
+  if (!validateNoteInput(text)) {
+    liveRegion.textContent = "Invalid input. Please follow note guidelines.";
+    return;
+  }
 
   notes.push(createNote(text));
   syncStorage();
   renderNotes();
 
-  // Clears input + restores focus
   noteForm.reset();
 });
 
