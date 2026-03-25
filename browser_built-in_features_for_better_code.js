@@ -92,6 +92,7 @@ const renderNotes = () => {
   notesList.replaceChildren();
 
   clearAllBtn.disabled = !notes.length;
+  clearAllBtn.hidden = notes.length === 0;
 
   for (const note of notes) {
   // Clone template content for each note
