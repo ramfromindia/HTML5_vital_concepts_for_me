@@ -91,7 +91,6 @@ const renderNotes = () => {
   // Safely clear list (no innerHTML)
   notesList.replaceChildren();
 
-  clearAllBtn.disabled = !notes.length;
   clearAllBtn.hidden = notes.length === 0;
 
   for (const note of notes) {
