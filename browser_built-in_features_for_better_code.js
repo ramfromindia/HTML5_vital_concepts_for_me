@@ -91,7 +91,8 @@ const renderNotes = () => {
   // Safely clear list (no innerHTML)
   notesList.replaceChildren();
 
-  clearAllBtn.hidden = notes.length === 0;
+  clearAllBtn.hidden = notes.length < 2;
+  clearAllBtn.disabled = notes.length < 3;
 
   for (const note of notes) {
   // Clone template content for each note
