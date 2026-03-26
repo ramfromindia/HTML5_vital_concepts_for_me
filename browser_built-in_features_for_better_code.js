@@ -93,6 +93,7 @@ const renderNotes = () => {
 
   clearAllBtn.hidden = notes.length < 2;
   clearAllBtn.disabled = notes.length < 3;
+  clearAllBtn.setAttribute("aria-disabled", notes.length < 3);
 
   for (const note of notes) {
   // Clone template content for each note
