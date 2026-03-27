@@ -91,9 +91,15 @@ const renderNotes = () => {
   // Safely clear list (no innerHTML)
   notesList.replaceChildren();
 
-  clearAllBtn.hidden = notes.length < 2;
-  clearAllBtn.disabled = notes.length < 3;
-  clearAllBtn.setAttribute("aria-disabled", notes.length < 3);
+  const isHidden = notes.length < 2;
+  const isDisabled = notes.length < 3;
+
+  clearAllBtn.hidden = isHidden;
+  clearAllBtn.disabled = isDisabled;
+
+  // ✅ ARIA reflection (only for disabled state)
+  clearAllBtn.setAttribute("aria-disabled", String(isDisabled));
+
 
   for (const note of notes) {
   // Clone template content for each note
