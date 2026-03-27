@@ -94,12 +94,16 @@ const renderNotes = () => {
   const isHidden = notes.length < 2;
   const isDisabled = notes.length < 3;
 
-  clearAllBtn.hidden = isHidden;
+  clearAllBtn.classList.toggle("visually-hidden", isHidden);
   clearAllBtn.disabled = isDisabled;
 
-  // ✅ ARIA reflection (only for disabled state)
-  clearAllBtn.setAttribute("aria-disabled", String(isDisabled));
-
+  if (!isHidden) {
+    if (isDisabled) {
+      liveRegion.textContent = "Clear all button is disabled";
+    } else {
+      liveRegion.textContent = "Clear all button is enabled";
+    }
+  }
 
   for (const note of notes) {
   // Clone template content for each note
